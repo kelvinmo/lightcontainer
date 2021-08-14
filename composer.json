@@ -15,6 +15,9 @@
     "autoload": {
         "psr-4": { "LightContainer\\": "src" }
     },
+    "autoload-dev": {
+        "psr-4": { "LightContainer\\Tests\\": "tests" }
+    },
     "scripts": {
         "test": [ "@composer install", "phpunit" ],
         "phpstan": [ "@composer install", "phpstan analyse" ]
