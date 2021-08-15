@@ -35,7 +35,7 @@
 
 namespace LightContainer\Resolvers;
 
-use LightContainer\Container;
+use LightContainer\LightContainerInterface;
 
 /**
  * A resolver that resolves to a specified value.
@@ -60,7 +60,7 @@ class ValueResolver implements ResolverInterface {
     /**
      * {@inheritdoc}
      */
-    public function resolve(Container $container) {
+    public function resolve(LightContainerInterface $container) {
         return $this->value;
     }
 

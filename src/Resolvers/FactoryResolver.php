@@ -35,7 +35,7 @@
 
 namespace LightContainer\Resolvers;
 
-use LightContainer\Container;
+use LightContainer\LightContainerInterface;
 
 /**
  * A resolver that resolves to a value returned by a specified factory
@@ -64,7 +64,7 @@ class FactoryResolver implements ResolverInterface {
     /**
      * {@inheritdoc}
      */
-    public function resolve(Container $container) {
+    public function resolve(LightContainerInterface $container) {
         $factory = $this->factory;
         return $factory($container);
     }

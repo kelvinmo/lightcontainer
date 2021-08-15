@@ -35,7 +35,7 @@
 
 namespace LightContainer\Resolvers;
 
-use LightContainer\Container;
+use LightContainer\LightContainerInterface;
 
 /**
  * A resolver that resolves to a defined constant.
@@ -56,7 +56,7 @@ class ConstantResolver extends ValueResolver {
     /**
      * {@inheritdoc}
      */
-    public function resolve(Container $container) {
+    public function resolve(LightContainerInterface $container) {
         return constant($this->value);
     }
 }

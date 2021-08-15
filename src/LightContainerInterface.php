@@ -33,32 +33,25 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer\Resolvers;
+namespace LightContainer;
 
-use LightContainer\LightContainerInterface;
+use LightContainer\Resolvers\ResolverInterface;
+use Psr\Container\ContainerInterface;
 
 /**
- * An interface for all resolvers.
- * 
- * A *resolver* is a class that returns an object or some other value when
- * the {@link resolve()} method is called.
- * Examples of ways by which a resolver can resolve to a value include:
- * 
- * - Creating a new instance of a class
- * - Retrieving from a stored value
- * - Calling the parent container to resolve the value from another
- *   identifier
+ * The core LightContainer interface.
  */
-interface ResolverInterface {
+interface LightContainerInterface extends ContainerInterface {
     /**
-     * Resolves an object or value
+     * Gets the resolver associated with a particular identifier.
      * 
-     * @param LightContainerInterface $container the LightContainer instance
-     * @return mixed the resolved object or value
-     * @throws NotFoundException if the resolver cannot instantiate the
-     * object
+     * If a resolver cannot be found, it returns null
+     * 
+     * @param string $id the identifier
+     * @param bool $include_autowire whether to include resolvers automatically
+     * generated through autowiring
+     * @return ResolverInterface the resolver or null
      */
-    public function resolve(LightContainerInterface $container);
+    public function getResolver(string $id, bool $include_autowire = true): ?ResolverInterface;
 }
-
 ?>
