@@ -65,7 +65,7 @@ class ValueResolver implements ResolverInterface {
     }
 
     /**
-     * Returns a resolver that resolves to a null value.
+     * Returns a value resolver that resolves to a null.
      * 
      * @return ValueResolver
      */
