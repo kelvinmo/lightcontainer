@@ -47,9 +47,9 @@ class ConstantResolver extends ValueResolver {
     /**
      * Creates a ValueResolver with the specified value
      * 
-     * @param mixed $value the name of the constant
+     * @param string $value the name of the constant
      */
-    public function __construct($constant) {
+    public function __construct(string $constant) {
         parent::__construct($constant);
     }
 

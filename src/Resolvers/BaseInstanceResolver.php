@@ -65,6 +65,11 @@ class BaseInstanceResolver implements ResolverInterface {
         'call' => []
     ];
 
+    /**
+     * Stores the shared object
+     * 
+     * @var mixed
+     */
     private $shared = null;
 
     /**
@@ -72,7 +77,7 @@ class BaseInstanceResolver implements ResolverInterface {
      * 
      * @param array $options instantiation options
      */
-    public function __construct($options = null) {
+    public function __construct(array $options = null) {
         if ($options != null) {
             $this->options = $options;
         }

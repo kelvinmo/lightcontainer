@@ -69,7 +69,7 @@ class ValueResolver implements ResolverInterface {
      * 
      * @return ValueResolver
      */
-    public static function nullResolver() {
+    public static function nullResolver(): ValueResolver {
         if (self::$nullResolver == null) {
             self::$nullResolver = new ValueResolver(null);
         }
