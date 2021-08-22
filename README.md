@@ -55,11 +55,10 @@ to create the necessary objects.  This is *autowiring*.
 
 ### Introduction
 
-You can configure the container through the `set` method.
-This method can be called with up to two parameters: a string
-[entry identifier], and an optional value. The main ways 
-you can use this method is used to configure the container are
-set out in this section, with further details can be found
+You can configure the container through the `set` method.  This method can be
+called with up to two parameters: a string [entry identifier], and an optional
+value. The main ways you can use this method is used to configure the
+container are set out in this section, with further details can be found
 in the [reference](#reference) section below.
 
 ### Instantiation options
@@ -72,12 +71,132 @@ which then allows you to specify options.
 $container->set(D::class)->shared();
 ```
 
-Multiple options can be set by chaining up options.
+Multiple options can be set by chaining up the methods.
 
 ```php
 $container->set(D::class)
     ->alias(FooInterface::class, FooInterfaceImpl::class)
     ->shared();
+```
+
+Instantiation options are cleared every time you call the `set` method
+on the container object.  To set additional options on the same
+resolver, use the `getResolver` method to retrieve the existing resolver.
+
+```php
+$container->set(D::class)->shared();
+
+// Correct
+$container->getResolver(D::class)->alias(FooInterface::class, FooInterfaceImpl::class);
+
+// Incorrect - shared() will disappear
+$container->set(D::class)->alias(FooInterface::class, FooInterfaceImpl::class);
+```
+
+
+
+#### Aliases
+
+Consider the following declarations:
+
+```php
+interface FooInterface {}
+
+class FooInterfaceImpl implements FooInterface {}
+
+class D {
+    public function __construct(FooInterface $i) {}
+}
+```
+
+`D` cannot be instantiated by autowiring as `FooInterface` is an interface.
+We need to specify which concrete class that implements the interface
+we want.  We can do this by using the `alias` method on the resolver.
+
+```php
+$container->set(D::class)->alias(FooInterface::class, FooInterfaceImpl::class);
+
+$d = $container->get(D::class);
+// This is equivalent to new D(new FooInterfaceImpl())
+```
+
+You can set multiple aliases with a single call by passing an array.
+
+```php
+$container->set(E::class)->alias([
+    FooInterface::class => FooInterfaceImpl::class,
+    BarInterface::class => BarInterfaceImpl::class
+]);
+```
+
+If you want to define an alias applicable for all classes in the container,
+consider using a [global alias](#global-aliases).
+
+#### Constructor arguments
+
+Consider the following set of classes:
+
+```php
+class F {}
+
+class G {
+    public function __construct(F $f, string $host, int $port = 80) {}
+}
+```
+
+`G` cannot be instantiated by autowiring as we need to, as a minimum,
+specify `$host`. We can do this by using the `args` method on the resolver.
+
+```php
+$container->set(G::class)->args('example.com');
+$container->set(G::class)->args('example.com', 8080);
+// Multiple calls also work
+$container->set(G::class)
+    ->args('example.com')
+    ->args(8080);
+```
+
+The `args` method can only be used to specify parameters that:
+
+* do not have a type hint; or
+* have a type hint for an internal type (e.g. int, string, bool); or
+* for PHP 8, have a type hint that is a union type.
+
+Other parameters (i.e. those with type hints for classes or interfaces)
+are ignored when processing the `args` method.  To manipulate how
+these parameters are treated, use [aliases](#aliases) or
+[global aliases](#global-aliases).
+
+```php
+class H {
+    // PHP 8 is required for this declaration to work
+    public function __construct(F $f, int|string $bar, A $a, $baz) {}
+}
+
+// This sets $bar to 'one' and $baz to 'two'
+$container->set(H::class)->args('one', 'two');
+```
+
+There may be times where you need to use something from the container as an
+argument.  This may occur if the parameter in the declaration is not type
+hinted (and so you can't use `alias`), or if you want to specify a
+particular [named instance](#multiple-shared-instances).  In these cases
+you will need to wrap the entry identifier with `Container::ref()`.
+
+```php
+class I {
+    /**
+     * @param FooInterface $foo
+     */
+    public function __construct($foo) {}
+}
+
+// See $foo to the FooInterfaceImpl from the container (which may be
+// instantiated if required)
+$container->set(I::class)->args(LightContainer\Container::ref(FooInterfaceImpl::class));
+
+// Set $foo to named instance @foo from the container
+$container->set(I::class)->args(LightContainer\Container::ref('@foo'));
 ```
 
 ## Reference
