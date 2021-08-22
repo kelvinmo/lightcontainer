@@ -47,17 +47,10 @@ class ConstantResolver extends ValueResolver {
     /**
      * Creates a ValueResolver with the specified value
      * 
-     * @param string $value the name of the constant
+     * @param string $constant the name of the constant
      */
     public function __construct(string $constant) {
-        parent::__construct($constant);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resolve(LightContainerInterface $container) {
-        return constant($this->value);
+        parent::__construct(constant($constant));
     }
 }
 
