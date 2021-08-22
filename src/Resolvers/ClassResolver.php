@@ -244,44 +244,44 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
                     break;
                 }
 
-                $value = array_shift($args);
+                $resolver = array_shift($args);
                 $type_match = true;
                 switch ($param['type']) {
                     case '*':
                         // Do nothing
                         break;
                     case 'array':
-                        $type_match = is_​array($value);
+                        $type_match = is_array($resolver);
                         break;
                     case 'bool':
-                        $type_match = is_​bool($value);
+                        $type_match = is_bool($resolver);
                         break;
                     case 'callable':
-                        $type_match = is_​callable($value);
+                        $type_match = is_callable($resolver);
                         break;
                     case 'float':
-                        $type_match = is_​float($value);
+                        $type_match = is_float($resolver);
                         break;
                     case 'int':
-                        $type_match = is_​int($value);
+                        $type_match = is_int($resolver);
                         break;
                     case 'iterable':
-                        $type_match = is_​iterable($value);
+                        $type_match = is_iterable($resolver);
                         break;
                     case 'resource':
-                        $type_match = is_​resource($value);
+                        $type_match = is_resource($resolver);
                         break;
                     case 'string':
-                        $type_match = is_​string($value);
+                        $type_match = is_string($resolver);
                         break;
                     default:
-                        $type_match = is_a($value, $param['type']);
+                        $type_match = is_a($resolver, $param['type']);
                 }
                 if (!$type_match) {
                     throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
                 }
 
-                $resolvers[] = new ValueResolver($value);
+                $resolvers[] = $resolver;
             } else {
                 try {
                     if (isset($options['alias'][$param['type']])) {
