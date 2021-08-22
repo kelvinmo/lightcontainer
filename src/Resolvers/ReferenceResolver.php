@@ -51,6 +51,13 @@ class ReferenceResolver extends BaseInstanceResolver {
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function propagate(bool $propagate = true) {
+        throw new \InvalidArgumentException('Propagate cannot be set on a ReferenceResolver');
+    }
+
+    /**
      * Retrieves the identifier of the target referenced by this
      * resolver.
      * 
@@ -60,7 +67,14 @@ class ReferenceResolver extends BaseInstanceResolver {
         return $this->target;
     }
 
-    protected function getTargetResolver(LightContainerInterface $container) {
+    /**
+     * Gets the resolver for the target, traversing through ReferenceResolvers
+     * where required.
+     * 
+     * @param LightContainerInterface the container
+     * @return ResolverInterface the traversed resolver
+     */
+    protected function getTargetResolver(LightContainerInterface $container): ?ResolverInterface {
         $resolver = $container->getResolver($this->target);
         if (($resolver instanceof ReferenceResolver) && (!$resolver->options['shared'])) {
             return $resolver->getTargetResolver($container);
@@ -86,13 +100,16 @@ class ReferenceResolver extends BaseInstanceResolver {
         //    and the target resolver is not shared.  This way we can set specific
         //    options for the resolver
         if (($target_resolver instanceof ClassResolver) && !$target_resolver->buildIsShared($container)) {
-            // TODO buildIsShared
+            // TODO buildIsShared or is cached?
             $resolver = clone $target_resolver;
             $resolver->setAutowired(false);
-            $resolver->setOptions($this->options);
-            // 3. Set options. (other than shared?)
-            // TODO class resolvers only (or also reference resolvers?)
-            // TODO cache?
+
+            // Set options - only alias, args and call are set
+            foreach (['alias', 'args', 'call'] as $option) {
+                if (!empty($this->options[$option])) {
+                    $resolver->options[$option] = $this->options[$option];
+                }
+            }
         } else {
             $resolver = $target_resolver;
         }
@@ -100,7 +117,7 @@ class ReferenceResolver extends BaseInstanceResolver {
         // 4. Create the object
         $object = $resolver->resolve($container);
 
-        // 6. Save the object if it is shared
+        // 5. Save the object if it is shared
         if (($resolver instanceof ClassResolver) && $this->options['shared'])
             $this->saveSharedObject($object);
         
