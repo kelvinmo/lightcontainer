@@ -43,22 +43,24 @@ use LightContainer\LightContainerInterface;
  * This resolver is useful in non-PHP configuration files, where
  * you need to specify the value of a global variable.
  */
-class GlobalResolver extends ValueResolver {
+class GlobalResolver implements ResolverInterface {
+    protected $variable;
+
     /**
-     * Creates a ValueResolver with the specified value
+     * Creates a GlobalResolver
      * 
-     * @param string $value the name of the global variable,
+     * @param string $variable the name of the global variable,
      * without the preceding dollar sign
      */
-    public function __construct(string $constant) {
-        parent::__construct($constant);
+    public function __construct(string $variable) {
+        $this->variable = $variable;
     }
 
     /**
      * {@inheritdoc}
      */
     public function resolve(LightContainerInterface $container) {
-        return $GLOBALS[$this->value];
+        return $GLOBALS[$this->variable];
     }
 }
 

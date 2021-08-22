@@ -17,7 +17,7 @@ $global_var = 'global variable initial';
  * Tests
  * ------------------------------------------------------------------------- */
 
-class ValueResolversTest extends TestCase {
+class MiscResolversTest extends TestCase {
     public function testConstantResolver() {
         $container = new Container();
         $resolver = new ConstantResolver('LightContainer\Tests\TEST_CONSTANT');
