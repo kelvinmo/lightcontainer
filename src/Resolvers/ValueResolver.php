@@ -58,14 +58,17 @@ class ValueResolver implements ResolverInterface {
     }
 
     /**
-     * Checks whether the value return this resolver will
+     * Checks whether the value resolved by this resolver will
      * match a particular type.
      * 
      * @param string $expected_type the expected type
+     * @param bool $allow_null whether this method will return true if
+     * the value resolved by this resolver is a null
      * @return bool true if the type matches
      * @see https://www.php.net/manual/en/language.types.declarations.php
      */
-    public function checkType($expected_type) {
+    public function checkType($expected_type, $allow_null = true) {
+        if ($allow_null && ($this->value == null)) return true;
         switch ($expected_type) {
             case '*';
             case 'mixed':
