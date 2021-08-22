@@ -30,6 +30,10 @@ class BasicTestB {
     }
 }
 
+class BasicTestCustom {
+    public $inner;
+}
+
 class BasicTestCycleA {
     public $b;
 
@@ -137,6 +141,20 @@ class BasicTest extends TestCase {
         $a = $container->get('@instance');
         $b = $container->get('@instance');
         $this->assertSame($a, $b);
+    }
+
+    // custom instantiation
+    public function testCustomInstantiation() {
+        $container = new Container();
+        $container->set(BasicTestCustom::class, function($container) {
+            $custom = new BasicTestCustom();
+            $custom->inner = $container->get(BasicTestClass::class);
+            return $custom;
+        });
+
+        $a = $container->get(BasicTestCustom::class);
+        $this->assertInstanceOf(BasicTestCustom::class, $a);
+        $this->assertInstanceOf(BasicTestClass::class, $a->inner);
     }
 
     // values
