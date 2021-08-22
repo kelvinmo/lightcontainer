@@ -36,6 +36,7 @@
 namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
+use LightContainer\ContainerException;
 
 /**
  * A resolver that instantiates a class.
@@ -215,11 +216,12 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         } else {
             $i = array_search($method, array_column($options['call'], 'method'));
             if ($i === false) {
-                // TODO Method not found!
+                throw new \UnexpectedValueException('Method not found: ' . $method);
             }
             $args = $options['call'][$i]['args'];
         }
 
+        $n = 1;
         foreach ($params as $param) {
             if ($param['type'] == '...') {
                 // variadic
@@ -231,18 +233,55 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
                     }
                 }
                 break;
-            } elseif ($param['type'] == '*') {
-                // Union type or no type hint
-
+            } elseif (($param['type'] == '*') || $param['builtin']) {
+                // Union type, builtin type or no type hint
+                // We pick up whatever's next in the argument array, with
+                // some type checking if applicable
                 if (empty($args)) {
-                        if (!$param['optional']) {
-                            // Error
-                        }
-                        break;
+                    if (!$param['optional']) {
+                        throw new ContainerException('Manadatory parameter ' . $n . ' not provided for method ' . $method);
                     }
-                    //$value = array_shift($args);
-            } elseif ($param['builtin']) {
+                    break;
+                }
 
+                $value = array_shift($args);
+                $type_match = true;
+                switch ($param['type']) {
+                    case '*':
+                        // Do nothing
+                        break;
+                    case 'array':
+                        $type_match = is_​array($value);
+                        break;
+                    case 'bool':
+                        $type_match = is_​bool($value);
+                        break;
+                    case 'callable':
+                        $type_match = is_​callable($value);
+                        break;
+                    case 'float':
+                        $type_match = is_​float($value);
+                        break;
+                    case 'int':
+                        $type_match = is_​int($value);
+                        break;
+                    case 'iterable':
+                        $type_match = is_​iterable($value);
+                        break;
+                    case 'resource':
+                        $type_match = is_​resource($value);
+                        break;
+                    case 'string':
+                        $type_match = is_​string($value);
+                        break;
+                    default:
+                        $type_match = is_a($value, $param['type']);
+                }
+                if (!$type_match) {
+                    throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
+                }
+
+                $resolvers[] = new ValueResolver($value);
             } else {
                 try {
                     if (isset($options['alias'][$param['type']])) {
@@ -258,6 +297,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
 
                 }
             }
+            $n++;
         }
 
         return $resolvers;
