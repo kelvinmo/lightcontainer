@@ -58,6 +58,49 @@ class ValueResolver implements ResolverInterface {
     }
 
     /**
+     * Checks whether the value return this resolver will
+     * match a particular type.
+     * 
+     * @param string $expected_type the expected type
+     * @return bool true if the type matches
+     * @see https://www.php.net/manual/en/language.types.declarations.php
+     */
+    public function checkType($expected_type) {
+        switch ($expected_type) {
+            case '*';
+            case 'mixed':
+                return true;
+                break;
+            case 'array':
+                return is_array($this->value);
+                break;
+            case 'bool':
+                return is_bool($this->value);
+                break;
+            case 'callable':
+                return is_callable($this->value);
+                break;
+            case 'float':
+                return is_float($this->value);
+                break;
+            case 'int':
+                return is_int($this->value);
+                break;
+            case 'iterable':
+                return is_iterable($this->value);
+                break;
+            case 'resource':
+                return is_resource($this->value);
+                break;
+            case 'string':
+                return is_string($this->value);
+                break;
+            default:
+                return is_a($this->value, $expected_type);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function resolve(LightContainerInterface $container) {

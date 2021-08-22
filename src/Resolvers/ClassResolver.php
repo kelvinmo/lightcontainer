@@ -48,6 +48,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
 
     protected $cache = [
         'tree' => [],
+        'interfaces' => [],
         'constructor' => null,   // ReflectionMethod for the constructor
         'params' => [],
         'resolvers' => [],
@@ -69,6 +70,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         $this->cache['params']['__construct'] = ($constructor != null) ? $this->buildMethodParamsCache($constructor) : [];
         $this->cache['constructor'] = $constructor;
 
+        $this->cache['interfaces'] = $refl->getInterfaceNames();
         $this->cache['is_internal'] = $refl->isInternal();
 
         while ($parent = $refl->getParentClass()) {
@@ -123,7 +125,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
      * {@inheritdoc}
      */
     protected function setOptions(array $options) {
-        // TODO check method exists, clear caches
+        // TODO check method exists and remove if doesn't, clear caches
         parent::setOptions($options);
     }
 
@@ -245,40 +247,11 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
                 }
 
                 $resolver = array_shift($args);
-                $type_match = true;
-                switch ($param['type']) {
-                    case '*':
-                        // Do nothing
-                        break;
-                    case 'array':
-                        $type_match = is_array($resolver);
-                        break;
-                    case 'bool':
-                        $type_match = is_bool($resolver);
-                        break;
-                    case 'callable':
-                        $type_match = is_callable($resolver);
-                        break;
-                    case 'float':
-                        $type_match = is_float($resolver);
-                        break;
-                    case 'int':
-                        $type_match = is_int($resolver);
-                        break;
-                    case 'iterable':
-                        $type_match = is_iterable($resolver);
-                        break;
-                    case 'resource':
-                        $type_match = is_resource($resolver);
-                        break;
-                    case 'string':
-                        $type_match = is_string($resolver);
-                        break;
-                    default:
-                        $type_match = is_a($resolver, $param['type']);
-                }
-                if (!$type_match) {
-                    throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
+                if (($param['type'] != '*') && ($resolver instanceof ValueResolver)) {
+                    // Do type checking for ValueResolvers
+                    if (!$resolver->checkType($param['type'])) {
+                        throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
+                    }
                 }
 
                 $resolvers[] = $resolver;
