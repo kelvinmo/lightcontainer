@@ -188,7 +188,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
                 $entry = [
                     'type' => $type->getName(),
                     'builtin' => $type->isBuiltIn(),
-                    'optional' => $param->allowsNull()
+                    'optional' => ($param->allowsNull() || $param->isDefaultValueAvailable())
                 ];
             } else {
                 // Type hint is a ReflectionUnionType or no type hint
@@ -241,7 +241,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
                 // some type checking if applicable
                 if (empty($args)) {
                     if (!$param['optional']) {
-                        throw new ContainerException('Manadatory parameter ' . $n . ' not provided for method ' . $method);
+                        throw new ContainerException('Mandatory parameter ' . $n . ' not provided for method ' . $method);
                     }
                     break;
                 }
