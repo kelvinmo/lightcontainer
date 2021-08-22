@@ -3,6 +3,8 @@
 LightContainer is a simple [PSR-11] compliant dependency injection container
 that supports autowiring.
 
+[![build](https://github.com/kelvinmo/lightcontainer/workflows/CI/badge.svg)](https://github.com/kelvinmo/lightcontainer/actions?query=workflow%3ACI)
+
 ## Requirements
 
 * PHP 7.2 or later
