@@ -5,6 +5,11 @@ that supports autowiring.
 
 [![build](https://github.com/kelvinmo/lightcontainer/workflows/CI/badge.svg)](https://github.com/kelvinmo/lightcontainer/actions?query=workflow%3ACI)
 
+## Table of contents
+
+<!--ts-->
+<!--te-->
+
 ## Requirements
 
 * PHP 7.2 or later
