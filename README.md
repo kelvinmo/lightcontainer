@@ -93,8 +93,6 @@ $container->getResolver(D::class)->alias(FooInterface::class, FooInterfaceImpl::
 $container->set(D::class)->alias(FooInterface::class, FooInterfaceImpl::class);
 ```
 
-
-
 #### Aliases
 
 Consider the following declarations:
@@ -128,6 +126,9 @@ $container->set(E::class)->alias([
     BarInterface::class => BarInterfaceImpl::class
 ]);
 ```
+
+Aliases are not limited to interfaces.  They can be applied to classes
+as well.
 
 If you want to define an alias applicable for all classes in the container,
 consider using a [global alias](#global-aliases).
@@ -267,7 +268,7 @@ ancestor class that have an entry in the container.
 For example, in the declaration below, the resolver for `N` is autowired
 as there is no explicit entry in the container for `N`.  Because `L` is
 an ancestor class for `N` and it has an entry in the container, `N`
-inherits all the instantiation options
+inherits all the instantiation options from `L`.
 
 ```php
 class L {}
@@ -275,27 +276,74 @@ class M extends L {}
 class N extends M {}
 
 $container->set(L::class)->shared();
-$n = $container->get(N::class);
+// $n1 and $n2 are the same instance because
+// N inherited 'shared' from L
+$n1 = $container->get(N::class);
+$n2 = $container->get(N::class);
 ```
 
-propagate
+To control this behaviour, call `propagate(false)` on the resolver.
+This will stop instantiation options from being propagated to autowired
+resolvers created for its subclasses.  For example, in the example
+below, `N` is an autowired resolver, but does not inherit the options
+from `L` because `propagate` for `L` is set to false.  Therefore
+`L` retains the default behaviour of not creating shared instances.
 
 ```php
 $container->set(L::class)->shared()->propagate(false);
-// N will not be shared
-$n = $container->get(N::class);
+// $n1 and $n2 are the different instances because
+// L does not propagate its options to autowired
+// subclasses
+$n1 = $container->get(N::class);
+$n2 = $container->get(N::class);
 ```
 
-Default rule
+To set instantiation options for *all* autowired resolvers, you can use the
+special wildcard resolver `*`.
+
+```php
+// Set 'shared' to true for all autowired resolvers
+$container->set('*')->shared();
+```
 
 ### Global aliases
 
-Instead of defining
+Instead of defining [aliases](#aliases) at the class level, you can define a
+*global alias*, which applicable for all classes created by the container.
+This can be done by calling the `set` method with the name of the class or
+interface to be replaced in the first argument, and the name of the concrete
+class alias as the second argument.
 
-Global aliases are overriden by per class alias
+```php
+$container->set(FooInterface::class, FooInterfaceImpl::class);
+```
 
-One advantage of defining a global alias is you can set instantiation
-options.
+If an alias is also defined at the class level, that definition takes
+precedence over the global alias.
+
+```php
+class FooInterfaceImplGlobal implements FooInterface {}
+class FooInterfaceImplForD implements FooInterface {}
+
+$container->set(FooInterface::class, FooInterfaceImplGlobal::class);
+$container->set(D::class)->alias(FooInterface::class, FooInterfaceImplForD::class);
+
+// D uses FooInterfaceImplForD instead of FooInterfaceImplGlobal
+$container->get(D::class);
+```
+
+Unlike aliases defined at the class level, you can set instantiation
+options for global aliases.  These are applied to objects instantiated
+by referring to the identifier of the global alias instead of the concrete
+class. The following instantiation options are supported:
+
+- `alias` (additional [class aliases](#aliases))
+- `args` ([constructor arguments](#constructor-arguments))
+- `call` ([setters](#setter-injection))
+- `shared` ([shared instances](#shared-instances))
+
+Instantiation options specified in the global alias takes precedence over
+the options defined for the concrete class.
 
 ### Multiple shared instances
 
