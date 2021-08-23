@@ -48,6 +48,14 @@ use LightContainer\Resolvers\ValueResolver;
  */
 class Container implements LightContainerInterface {
     /**
+     * Regular expression for potentially valid class/interface/trait
+     * names.
+     * 
+     * @see https://stackoverflow.com/questions/3195614/validate-class-method-names-with-regex/12011255
+     */
+    const CLASS_NAME_REGEX = '/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*(\\\\[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)*$/';
+
+    /**
      * An array of resolvers
      * 
      * @var array
@@ -91,7 +99,7 @@ class Container implements LightContainerInterface {
 
                 // TODO Should we set this to shared if $id is not a recognisable class/interface?
                 // Or if it contains an invalid class/interface character?
-                if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*(\\\\[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)*$/', $id)) {
+                if (!preg_match(self::CLASS_NAME_REGEX, $id)) {
                     $resolver->setNamedInstance();
                 }
             } else {
