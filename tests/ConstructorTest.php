@@ -159,6 +159,16 @@ class ConstructorTest extends TestCase {
         $this->assertEquals(8080, $obj->port);
     }
 
+    public function testMultipleArgsCalls() {
+        $container = new Container();
+        $container->set(ConstructorTestArgs::class)->args('example.com')->args(8080);
+
+        $obj = $container->get(ConstructorTestArgs::class);
+        $this->assertInstanceOf(ConstructorTestClass::class, $obj->a);
+        $this->assertEquals('example.com', $obj->host);
+        $this->assertEquals(8080, $obj->port);
+    }
+
     public function testInternalClasses() {
         $container = new Container();
         $container->set(\ReflectionClass::class)->args(ConstructorTestClass::class);

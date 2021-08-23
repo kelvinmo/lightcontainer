@@ -181,16 +181,7 @@ class BaseInstanceResolver implements ResolverInterface {
      * @return BaseInstanceResolver
      */
     public function args(...$args) {
-        foreach ($args as $arg) {
-            if ($arg instanceof ResolverInterface) {
-                $this->options['args'][] = $arg;
-            } elseif ($arg == null) {
-                $this->options['args'][] = ValueResolver::nullResolver();
-            } else {
-                $this->options['args'][] = new ValueResolver($arg);
-            }
-        }
-
+        $this->options['args'] = array_merge($this->options['args'], $this->buildResolversFromArgs($args));
         return $this;
     }
 
@@ -211,10 +202,33 @@ class BaseInstanceResolver implements ResolverInterface {
     public function call(string $method, ...$args) {
         $this->options['call'][] = [
             'method' => $method,
-            'args' => $args,
+            'args' => $this->buildResolversFromArgs($args),
         ];
 
         return $this;
+    }
+
+    /**
+     * Builds resolvers from arguments of {@link ::args()} and
+     * {@link ::call()}.
+     * 
+     * @param array the arguments
+     * @return array an array of resolvers
+     */
+    protected function buildResolversFromArgs(array $args) {
+        $resolvers = [];
+
+        foreach ($args as $arg) {
+            if ($arg instanceof ResolverInterface) {
+                $resolvers[] = $arg;
+            } elseif ($arg == null) {
+                $resolvers[] = ValueResolver::nullResolver();
+            } else {
+                $resolvers[] = new ValueResolver($arg);
+            }
+        }
+
+        return $resolvers;
     }
 
     /**
