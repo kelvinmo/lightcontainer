@@ -43,16 +43,36 @@ use LightContainer\NotFoundException;
  * registered in the container.
  */
 class ReferenceResolver extends BaseInstanceResolver {
+    /**
+     * The entry identifier of the target
+     * 
+     * @var string
+     */
     protected $target;
 
+    /**
+     * Whether this resolver relates to a named instance.  Named instances
+     * are required to be shared.
+     * 
+     * @var bool
+     */
     protected $named = false;
 
+    /**
+     * Creates a reference resolver to point to a particular target.
+     * 
+     * @param string $target the identifier of the target
+     * @param array $options instantiation options
+     */
     public function __construct(string $target, $options = null) {
         parent::__construct($options);
         $this->options['propagate'] = false;
         $this->target = $target;
     }
 
+    /**
+     * Flags that this resolver relates to a named instance.
+     */
     public function setNamedInstance() {
         $this->named = true;
         return $this->shared();

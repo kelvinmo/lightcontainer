@@ -42,8 +42,18 @@ use LightContainer\ContainerException;
  * A resolver that instantiates a class.
  */
 class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
+    /**
+     * The name of the class to create
+     * 
+     * @var string
+     */
     protected $class_name;
 
+    /**
+     * Whether this class resolver is created via autowiring
+     * 
+     * @var bool
+     */
     protected $autowired = false;
 
     protected $cache = [
@@ -55,7 +65,13 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         'is_internal' => false   // Whether the class is defined by C code or PHP code
     ];
 
-    public function __construct($class_name, $options = null) {
+    /**
+     * Creates a class resolver
+     * 
+     * @param string $class_name the name of the class
+     * @param array $options instantiation options
+     */
+    public function __construct(string $class_name, $options = null) {
         parent::__construct($options);
 
         if (!class_exists($class_name)) {
@@ -88,7 +104,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
     public function alias(...$args) {
         parent::alias(...$args);
 
-        // TODO Clear the resolver cache or rebuild?
+        // Clear the resolver cache
         $this->cache['resolvers'] = [];
 
         return $this;
@@ -162,7 +178,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
      * @param LightContainerInterface $container 
      * @return array
      */
-    protected function buildOptionsFromParents(LightContainerInterface $container) {
+    protected function buildOptionsFromParents(LightContainerInterface $container): array {
         if (!$this->isAutowired()) return $this->options;
 
         $options = [];
@@ -181,7 +197,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         return $options;
     }
 
-    protected function buildMethodParamsCache(\ReflectionMethod $method) {
+    protected function buildMethodParamsCache(\ReflectionMethod $method): array {
         $results = [];
 
         foreach ($method->getParameters() as $param) {
@@ -214,7 +230,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         return $results;
     }
 
-    protected function buildMethodResolvers($method, $options) {
+    protected function buildMethodResolvers(string $method, array $options): array {
         $resolvers = [];
         $params = $this->cache['params'][$method];
         $aliases = $options['alias'];
@@ -279,10 +295,6 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         }
 
         return $resolvers;
-    }
-
-    protected function updateMethodResolvers() {
-
     }
 
     public function resolve(LightContainerInterface $container) {
