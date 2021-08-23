@@ -67,7 +67,7 @@ class BasicTest extends TestCase {
         $this->assertInstanceOf(BasicTestClass::class, $obj);
     }
 
-    public function testInterface() {
+    public function testInterface() {  // global aliases
         $container = new Container();
         $container->set(BasicTestInterface::class, BasicTestInterfaceImpl::class);
         $obj = $container->get(BasicTestInterface::class);
@@ -133,6 +133,22 @@ class BasicTest extends TestCase {
         $this->assertNotSame($a, $b);
     }
 
+    // wildcard resolver
+    public function testWildcardResolverInstantiation() {
+        $this->expectException('Psr\\Container\\NotFoundExceptionInterface');
+        $container = new Container();
+        $container->get('*');
+    }
+
+    public function testWildcardOptions() {
+        $container = new Container();
+        $container->set('*')->shared();
+        
+        $a = $container->get(BasicTestClass::class);
+        $b = $container->get(BasicTestClass::class);
+        $this->assertSame($a, $b);
+    }
+
     // named instances
     public function testNamedInstance() {
         $container = new Container();
@@ -177,22 +193,6 @@ class BasicTest extends TestCase {
         $this->assertEquals(2, $paramHash['two']);
         $this->assertEquals(3, $paramHash['three']);
         $this->assertSame($obj, $container->get('@obj'));
-    }
-
-    // wildcard rules
-    public function testWildcardResolverInstantiation() {
-        $this->expectException('Psr\\Container\\NotFoundExceptionInterface');
-        $container = new Container();
-        $container->get('*');
-    }
-
-    public function testWildcardOptions() {
-        $container = new Container();
-        $container->set('*')->shared();
-        
-        $a = $container->get(BasicTestClass::class);
-        $b = $container->get(BasicTestClass::class);
-        $this->assertSame($a, $b);
     }
 }
 
