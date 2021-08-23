@@ -102,6 +102,8 @@ interface FooInterface {}
 
 class FooInterfaceImpl implements FooInterface {}
 
+class FooInterfaceSubclass extends FooInterfaceImpl {}
+
 class D {
     public function __construct(FooInterface $i) {}
 }
@@ -127,8 +129,20 @@ $container->set(E::class)->alias([
 ]);
 ```
 
-Aliases are not limited to interfaces.  They can be applied to classes
-as well.
+Aliases can refer to other aliases.  In the example below, when the container
+looks for `FooInterface`, it finds `FooInterfaceImpl` as an alias, but that
+in turn references `FooInterfaceSubclass`.  In the end, `FooInterfaceSubclass`
+is created.  It can also be seen that aliases can be made for classes as well
+as interfaces.
+
+```php
+$container->set(D::class)
+    ->alias(FooInterface::class, FooInterfaceImpl::class)
+    ->alias(FooInterfaceImpl::class, FooInterfaceSubclass::class);
+
+$d = $container->get(D::class);
+// This is equivalent to new D(new FooInterfaceSubclass())
+```
 
 If you want to define an alias applicable for all classes in the container,
 consider using a [global alias](#global-aliases).
@@ -312,7 +326,7 @@ Instead of defining [aliases](#aliases) at the class level, you can define a
 *global alias*, which applicable for all classes created by the container.
 This can be done by calling the `set` method with the name of the class or
 interface to be replaced in the first argument, and the name of the concrete
-class alias as the second argument.
+class as the second argument.
 
 ```php
 $container->set(FooInterface::class, FooInterfaceImpl::class);
@@ -347,9 +361,37 @@ the options defined for the concrete class.
 
 ### Multiple shared instances
 
-Multiple shared instances
+The [`shared` instantiation option](#shared-instances) will provide a single
+shared instance of a class for the entire container.  However, you may want to
+have multiple instances of the same class that are shared across the container.
 
-How to call: alias
+```php
+class O {
+    public function __construct(\PDO $db) {}
+}
+
+$container->set('@prod_db', \PDO::class)
+    ->args('mysql:host=example.com;dbname=prod');
+$container->set('@dev_db', \PDO::class)
+    ->args('mysql:host=example.com;dbname=dev');
+$container->set(O::class)->alias(\PDO::class, '@prod_db');
+```
+
+Named instances are simply a special kind of [global aliases](#global-aliases),
+so they can be used anywhere where an alias is accepted.  In particular, they
+are injected into constructors and setter methods using `alias`, not
+`args`.
+
+```php
+// Correct
+$container->set(O::class)->alias(\PDO::class, '@prod_db');
+
+// Incorrect
+$container->set(O::class)->args('@prod_db');
+```
+
+Furthermore, because named instances are simply a special kind of global
+aliases, you can set instantiation options for them (other than `shared`).
 
 ### Custom instantiation
 
