@@ -199,6 +199,43 @@ $container->set(I::class)->args(LightContainer\Container::ref(FooInterfaceImpl::
 $container->set(I::class)->args(LightContainer\Container::ref('@foo'));
 ```
 
+#### Setter injection
+
+In addition to dependency injection via the constructor, LightContainer also
+supports injecting dependencies via setter methods.  Consider this declaration:
+
+```php
+class J {
+    public function setA(A $a) {}
+}
+```
+
+To get the container to call `setA` to inject `A` whenever `J` is created,
+use the `call` method to specify the method to call.
+
+```php
+$container->set(J::class)->call('setA');
+```
+
+The `call` method also takes additional arguments, which will be passed
+on to the setter method.  The rules for specifying additional arguments are the
+same as for [constructors](#constructor-arguments).  In addition,
+[aliases](#aliases) and [global aliases](#global-aliases) will also be
+resolved in the same way as for constructor injection.
+
+```php
+class K {
+    public function setFoo(FooInterface $f, bool $debug);
+}
+
+$container->set(K::class)
+    ->alias(FooInterface::class, FooInterfaceImpl::class)
+    ->call('setFoo', false);
+```
+
+**NOTE.** Aliases apply to the constructor and *all* setter methods.  You
+cannot define aliases that only applies to a particular setter method.
+
 ## Reference
 
 ### Resolvers
