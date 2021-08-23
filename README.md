@@ -7,32 +7,29 @@ that supports autowiring.
 
 ## Table of contents
 
-<!--ts-->
-* [LightContainer](#lightcontainer)
-   * [Table of contents](#table-of-contents)
-   * [Requirements](#requirements)
-   * [Installation](#installation)
-   * [Basic Usage](#basic-usage)
-   * [Configuration](#configuration)
-      * [Introduction](#introduction)
-      * [Instantiation options](#instantiation-options)
-         * [Aliases](#aliases)
-         * [Constructor arguments](#constructor-arguments)
-         * [Setter injection](#setter-injection)
-         * [Shared instances](#shared-instances)
-         * [Options for autowired resolvers](#options-for-autowired-resolvers)
-      * [Global aliases](#global-aliases)
-      * [Multiple shared instances](#multiple-shared-instances)
-      * [Custom instantiation](#custom-instantiation)
-      * [Storing arbitrary values](#storing-arbitrary-values)
-   * [Reference](#reference)
-      * [Resolvers](#resolvers)
-      * [Instantiation options reference](#instantiation-options-reference)
-   * [Licence](#licence)
+<!-- toc -->
 
-<!-- Added by: runner, at: Mon Aug 23 21:39:53 UTC 2021 -->
+* [Requirements](#requirements)
+* [Installation](#installation)
+* [Basic Usage](#basic-usage)
+* [Configuration](#configuration)
+  * [Introduction](#introduction)
+  * [Instantiation options](#instantiation-options)
+    * [Aliases](#aliases)
+    * [Constructor arguments](#constructor-arguments)
+    * [Setter injection](#setter-injection)
+    * [Shared instances](#shared-instances)
+    * [Options for autowired resolvers](#options-for-autowired-resolvers)
+  * [Global aliases](#global-aliases)
+  * [Multiple shared instances](#multiple-shared-instances)
+  * [Custom instantiation](#custom-instantiation)
+  * [Storing arbitrary values](#storing-arbitrary-values)
+* [Reference](#reference)
+  * [Resolvers](#resolvers)
+  * [Instantiation options reference](#instantiation-options-reference)
+* [Licence](#licence)
 
-<!--te-->
+<!-- tocstop -->
 
 ## Requirements
 
