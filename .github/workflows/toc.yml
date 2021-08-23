@@ -2,7 +2,7 @@ name: Add TOC to Markdown files
 
 on:
   push:
-    branches: main
+    branches: master
     # Note asterisks are special characters and must be quoted
     paths:
       - README.md

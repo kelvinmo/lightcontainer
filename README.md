@@ -494,8 +494,6 @@ name, default, can be used in reference resolvers, description (with link)
 |        |         |             |
 |        |         |             |
 
-
-
 ## Licence
 
 BSD 3 clause
