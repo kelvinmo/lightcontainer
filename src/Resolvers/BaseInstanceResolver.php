@@ -79,7 +79,7 @@ class BaseInstanceResolver implements ResolverInterface {
      */
     public function __construct(array $options = null) {
         if ($options != null) {
-            $this->options = $options;
+            $this->options = array_merge($this->options, $options);
         }
     }
 

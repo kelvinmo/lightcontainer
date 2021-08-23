@@ -92,7 +92,7 @@ class Container implements LightContainerInterface {
                 // TODO Should we set this to shared if $id is not a recognisable class/interface?
                 // Or if it contains an invalid class/interface character?
                 if (!preg_match('/^[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*(\\\\[a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*)*$/', $id)) {
-                    $resolver->shared();
+                    $resolver->setNamedInstance();
                 }
             } else {
                 $resolver = new ValueResolver($value);

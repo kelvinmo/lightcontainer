@@ -45,9 +45,29 @@ use LightContainer\NotFoundException;
 class ReferenceResolver extends BaseInstanceResolver {
     protected $target;
 
+    protected $named = false;
+
     public function __construct(string $target, $options = null) {
         parent::__construct($options);
         $this->target = $target;
+    }
+
+    public function setNamedInstance() {
+        $this->named = true;
+        return $this->shared();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shared(bool $shared = true) {
+        if (($this->named) && (!$shared)) {
+            throw new \InvalidArgumentException('Cannot set shared to false for named instances');
+        }
+        if ($this->hasSharedObject() && (!$shared)) {
+            throw new \InvalidArgumentException('Cannot set shared to false once shared object is created');
+        }
+        return parent::shared($shared);
     }
 
     /**
