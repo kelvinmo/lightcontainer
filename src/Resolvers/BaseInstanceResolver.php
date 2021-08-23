@@ -160,7 +160,7 @@ class BaseInstanceResolver implements ResolverInterface {
     }
 
     /**
-     * Sets the values of non-type-hinted or scalar arguments to be passed onto
+     * Sets the values of non-type-hinted or literal arguments to be passed onto
      * the constructor.  Type-hinted class arguments are retrieved from the
      * container (with autowiring where required).
      * 
