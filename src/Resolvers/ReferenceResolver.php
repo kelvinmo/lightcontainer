@@ -49,6 +49,7 @@ class ReferenceResolver extends BaseInstanceResolver {
 
     public function __construct(string $target, $options = null) {
         parent::__construct($options);
+        $this->options['propagate'] = false;
         $this->target = $target;
     }
 
