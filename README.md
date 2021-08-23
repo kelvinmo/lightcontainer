@@ -512,11 +512,13 @@ cannot be called to resolve to an actual object.
 
 name, default, can be used in reference resolvers, description (with link)
 
-| Option | Default | Description |
-| ------ | ------- | ----------- |
-|        |         |             |
-|        |         |             |
-|        |         |             |
+| Option                                          | Default                                                      | Description                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [`alias`](#aliases)                             | none                                                         | Aliases for type hinted arguments for the constructor and setter methods |
+| [`args`](#constructor-arguments)                | none                                                         | Set other arguments for the constructor                      |
+| [`call`](#setter-injection)                     | none                                                         | Call setter methods                                          |
+| [`propagate`](#options-for-autowired-resolvers) | true                                                         | Whether instantiation options will propagate to autowired resolvers for subclasses |
+| [`shared`](#shared-instances)                   | false (except for [named instances](#multiple-shared-instances)) | Whether the instance resolved is shared across the container |
 
 ## Licence
 
