@@ -236,6 +236,126 @@ $container->set(K::class)
 **NOTE.** Aliases apply to the constructor and *all* setter methods.  You
 cannot define aliases that only applies to a particular setter method.
 
+#### Shared instances
+
+There may be times where you want the same instance of a class to
+be returned by the container no matter how many times it is resolved.  This
+may be the case if the object is meant to be used as a singleton.
+
+To do this, call the `shared` method on the resolver.
+
+```php
+$container->set(A::class)->shared();
+
+// $a1 and $a2 are the same instance
+$a1 = $container->get(A::class);
+$a2 = $container->get(A::class);
+```
+
+You can also switch off this behaviour by calling `shared(false)`.
+However, this only works if the shared instance has *not* been created
+(i.e. if `get` hasn't been called).  Otherwise this will throw an
+exception.
+
+#### Options for autowired resolvers
+
+*Autowired* resolvers are created automatically by the container as part of
+the autowiring process. As autowired resolvers do not have an explicit entry
+in the container, they inherit the instantiation options for the immediate
+ancestor class that have an entry in the container.
+
+For example, in the declaration below, the resolver for `N` is autowired
+as there is no explicit entry in the container for `N`.  Because `L` is
+an ancestor class for `N` and it has an entry in the container, `N`
+inherits all the instantiation options
+
+```php
+class L {}
+class M extends L {}
+class N extends M {}
+
+$container->set(L::class)->shared();
+$n = $container->get(N::class);
+```
+
+propagate
+
+```php
+$container->set(L::class)->shared()->propagate(false);
+// N will not be shared
+$n = $container->get(N::class);
+```
+
+Default rule
+
+### Global aliases
+
+Instead of defining
+
+Global aliases are overriden by per class alias
+
+One advantage of defining a global alias is you can set instantiation
+options.
+
+### Multiple shared instances
+
+Multiple shared instances
+
+How to call: alias
+
+### Custom instantiation
+
+Instead of using LightContainer's default instantiation function
+with autowiring, you can specify a custom factory function to create
+objects of a particular class.  This is done by calling `set`
+method with a callable pointing to the factory function as the second
+argument.
+
+The container is passed on as the first parameter to the factory
+function.
+
+```php
+$container->set(CustomClass::class, function ($container) {
+    $a = new CustomClass();
+    // Custom code here
+    return $a;
+});
+```
+
+[Instantiation options](#instantiation-options) are not available to
+custom factory functions.
+
+### Storing arbitrary values
+
+You can store arbitrary values in the container by calling the `set`
+method with a non-string, non-callable value as the second argument.
+
+```php
+$container->set('@port', 8080);
+$container->set('@config', ['foo' => 'bar']);
+
+// Returns 8080
+$container->get('@port');
+```
+
+It is recommended that you use an identifier that cannot be confused with a
+class name (e.g. by adding an invalid character for a class name, like `@`
+in the example above).
+
+**WARNING.** If you want to store a string or a callable, you will need to
+wrap it with using `Container::value()`.  Otherwise LightContainer will treat
+it as a [global alias](#global-aliases) or a
+[custom instantiation function](#custom-instantiation).
+
+```php
+// Correct
+$container->set('@host',
+LightContainer\Container::value('example.com'));
+
+// Incorrect
+$container->set('@host', 'example.com');
+```
+
 ## Reference
 
 ### Resolvers
@@ -269,7 +389,17 @@ set out in the table below.
 The class resolver returned for `*` is a special kind of class resolver.  It
 cannot be called to resolve to an actual object.
 
-### Class resolvers
+### Instantiation options reference
+
+name, default, can be used in reference resolvers, description (with link)
+
+| Option | Default | Description |
+| ------ | ------- | ----------- |
+|        |         |             |
+|        |         |             |
+|        |         |             |
+
+
 
 ## Licence
 
