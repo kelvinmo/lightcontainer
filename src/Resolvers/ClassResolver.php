@@ -103,6 +103,11 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
         }
         parent::call($method, ...$args);
 
+        if (!isset($this->cache['params'][$method])) {
+            $refl = new \ReflectionMethod($this->class_name, $method);
+            $this->cache['params'][$method] = $this->buildMethodParamsCache($refl);
+        }
+
         return $this;
     }
 
