@@ -184,6 +184,8 @@ class BaseInstanceResolver implements ResolverInterface {
         foreach ($args as $arg) {
             if ($arg instanceof ResolverInterface) {
                 $this->options['args'][] = $arg;
+            } elseif ($arg == null) {
+                $this->options['args'][] = ValueResolver::nullResolver();
             } else {
                 $this->options['args'][] = new ValueResolver($arg);
             }
