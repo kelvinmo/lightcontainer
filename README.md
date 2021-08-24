@@ -493,14 +493,16 @@ kind of resolver the method creates depends on the format of
 the entry identifier, and the type of value that is specified.  These are
 set out in the table below.
 
+**TODO**
+
 | Identifier                   | Value            | Resolver           | Description                                                  |
 | ---------------------------- | ---------------- | ------------------ | ------------------------------------------------------------ |
-| Name of an existing class    | None             | Class resolver     | Allows you to set [instantiation options](#instantiation-options) for that class |
-| Name of an (existing?) class | A string         | Reference resolver | Alias                                                        |
-| `*`                          | None             | Class resolver*    | Allows you to set default [instantiation options](#instantiation-options) |
-| Any other string             | Any other string | Reference resolver |                                                              |
-| Any other string             | A callable       | Factory resolver   |                                                              |
-| Any other string             | Any other value  | Value resolver     |                                                              |
+| Name of an existing class    | None             | Class resolver     | Sets [instantiation options](#instantiation-options) for that class |
+| Name of an (existing?) class | A string         | Reference resolver | Sets a [global alias](#global-aliases)                       |
+| `*`                          | None             | Class resolver*    | Sets default [instantiation options](#instantiation-options) for autowired resolvers |
+| Any other string             | Any other string | Reference resolver | Creates a [named instance](#multiple-shared-instances)       |
+| Any other string             | A callable       | Factory resolver   | Sets a [custom instantiation function](#custom-instantiation) |
+| Any other string             | Any other value  | Value resolver     | Stores an [arbitrary value](#storing-arbitrary-values) in the container |
 
 The class resolver returned for `*` is a special kind of class resolver.  It
 cannot be called to resolve to an actual object.
