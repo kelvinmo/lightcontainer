@@ -97,9 +97,10 @@ class Container implements LightContainerInterface {
                 $value = ltrim($value, '\\');
                 $resolver = new ReferenceResolver($value);
 
-                // TODO Should we set this to shared if $id is not a recognisable class/interface?
+                // TODO Should we set this to a named instance if $id is not an
+                // existing class/interface?
                 // Or if it contains an invalid class/interface character?
-                if (!preg_match(self::CLASS_NAME_REGEX, $id)) {
+                if (!self::isValidClassName($id)) {
                     $resolver->setNamedInstance();
                 }
             } else {
@@ -164,6 +165,18 @@ class Container implements LightContainerInterface {
             $this->resolvers[$id] = (new ClassResolver($id))->setAutowired(true);
             return $this->resolvers[$id];
         }
+    }
+
+    /**
+     * Determines whether or not a string resembles a valid class, interface
+     * or trait name, regardless of whether the class, interface or trait
+     * exists.
+     * 
+     * @param string $name the name to test
+     * @return bool truw if the name is a valid class name
+     */
+    protected static function isValidClassName(string $name): bool {
+        return preg_match(self::CLASS_NAME_REGEX, $name);
     }
 
     /**
