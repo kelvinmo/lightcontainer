@@ -189,12 +189,15 @@ class G {
 specify `$host`. We can do this by using the `args` method on the resolver.
 
 ```php
-$container->set(G::class)->args('example.com');
 $container->set(G::class)->args('example.com', 8080);
+
 // Multiple calls also work
 $container->set(G::class)
     ->args('example.com')
     ->args(8080);
+
+// Optional parameters can be omitted
+$container->set(G::class)->args('example.com');
 ```
 
 The `args` method can only be used to specify parameters that:
@@ -354,6 +357,13 @@ This can be done by calling the `set` method with the name of the class or
 interface to be replaced in the first argument, and the name of the concrete
 class as the second argument.
 
+**TO BE CONFIRMED.**  Note that the class or interface does not actually
+need to exist.  LightContainer only checks whether the first argument only
+contains characters that can be used as a class, interface or trait
+name (including the associated namespace), and if it does, it treats the
+entry as a global alias.  Otherwise it treats the entry as a
+[named instance](#multiple-shared-instances).
+
 ```php
 $container->set(FooInterface::class, FooInterfaceImpl::class);
 ```
@@ -439,7 +449,11 @@ $container->set(CustomClass::class, function ($container) {
 ```
 
 [Instantiation options](#instantiation-options) are not available to
-custom factory functions.
+custom factory functions.  [Named instances](#multiple-shared-instances) are
+also not available, as sharing is not supported for factory functions.
+Calls to named instances will simply result in the factory function being
+called, which may result in a different instance of the object being
+returned.
 
 ### Storing arbitrary values
 
@@ -493,16 +507,14 @@ kind of resolver the method creates depends on the format of
 the entry identifier, and the type of value that is specified.  These are
 set out in the table below.
 
-**TODO**
-
-| Identifier                   | Value            | Resolver           | Description                                                  |
-| ---------------------------- | ---------------- | ------------------ | ------------------------------------------------------------ |
-| Name of an existing class    | None             | Class resolver     | Sets [instantiation options](#instantiation-options) for that class |
-| Name of an (existing?) class | A string         | Reference resolver | Sets a [global alias](#global-aliases)                       |
-| `*`                          | None             | Class resolver*    | Sets default [instantiation options](#instantiation-options) for autowired resolvers |
-| Any other string             | Any other string | Reference resolver | Creates a [named instance](#multiple-shared-instances)       |
-| Any other string             | A callable       | Factory resolver   | Sets a [custom instantiation function](#custom-instantiation) |
-| Any other string             | Any other value  | Value resolver     | Stores an [arbitrary value](#storing-arbitrary-values) in the container |
+| Identifier                                                   | Value           | Resolver           | Description                                                  |
+| ------------------------------------------------------------ | --------------- | ------------------ | ------------------------------------------------------------ |
+| Name of an existing class                                    | None            | Class resolver     | Sets [instantiation options](#instantiation-options) for that class |
+| A valid class/interface/trait name (whether or not it exists) | A string        | Reference resolver | Sets a [global alias](#global-aliases)                       |
+| `*`                                                          | None            | Class resolver*    | Sets default [instantiation options](#instantiation-options) for autowired resolvers |
+| Any other string                                             | A string        | Reference resolver | Creates a [named instance](#multiple-shared-instances)       |
+| Any other string                                             | A callable      | Factory resolver   | Sets a [custom instantiation function](#custom-instantiation) |
+| Any other string                                             | Any other value | Value resolver     | Stores an [arbitrary value](#storing-arbitrary-values) in the container |
 
 The class resolver returned for `*` is a special kind of class resolver.  It
 cannot be called to resolve to an actual object.
