@@ -148,11 +148,14 @@ class BaseInstanceResolver implements ResolverInterface {
             $args = [[ $args[0] => $args[1] ]];
         }
         if ((count($args) != 1) || !is_array($args[0])) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException('alias requires two arguments or a single array');
         }
         foreach ($args[0] as $id => $target) {
-            if (!is_string($id) || !is_string($target)) {
-                throw new \InvalidArgumentException();
+            if (!is_string($id)) {
+                throw new \InvalidArgumentException('alias identifier must be a string');
+            }
+            if (!(is_string($target) || ($target == null))) {
+                throw new \InvalidArgumentException('alias target must be a string or null');
             }
             $this->options['alias'][$id] = ltrim($target, '\\');
         }

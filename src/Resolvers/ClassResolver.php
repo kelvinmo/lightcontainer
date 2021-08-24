@@ -298,7 +298,11 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
             } else {
                 try {
                     if (isset($options['alias'][$param['type']])) {
-                        $resolvers[] = new ReferenceResolver($options['alias'][$param['type']]);
+                        if ($options['alias'][$param['type']] == null) {
+                            $resolvers[] = ValueResolver::nullResolver();
+                        } else {
+                            $resolvers[] = new ReferenceResolver($options['alias'][$param['type']]);
+                        }
                     } elseif (!$param['optional']) {
                         $resolvers[] = new ReferenceResolver($param['type']);
                     } elseif (isset($param['default'])) {
