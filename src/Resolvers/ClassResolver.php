@@ -69,10 +69,9 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      * Creates a class resolver
      * 
      * @param string $class_name the name of the class
-     * @param array $options instantiation options
      */
-    public function __construct(string $class_name, $options = null) {
-        parent::__construct($options);
+    public function __construct(string $class_name) {
+        parent::__construct();
 
         if (!class_exists($class_name)) {
             throw new \InvalidArgumentException('ClassResolver can only be used for concrete classes (not interfaces or traits)');

@@ -62,11 +62,9 @@ class ReferenceResolver extends BaseInstanceResolver {
      * Creates a reference resolver to point to a particular target.
      * 
      * @param string $target the identifier of the target
-     * @param array $options instantiation options
      */
-    public function __construct(string $target, $options = null) {
-        parent::__construct($options);
-        $this->options['propagate'] = false;
+    public function __construct(string $target) {
+        parent::__construct(['propagate' => false]);
         $this->target = $target;
     }
 
