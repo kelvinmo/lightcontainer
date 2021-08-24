@@ -43,7 +43,7 @@ use LightContainer\LightContainerInterface;
  * This resolver is useful for storing fixed values (such as
  * configuration information) in the container.
  */
-class ValueResolver implements ResolverInterface {
+class ValueResolver implements ResolverInterface, TypeCheckInterface {
     private static $nullResolver = null;
 
     protected $value;
@@ -58,16 +58,9 @@ class ValueResolver implements ResolverInterface {
     }
 
     /**
-     * Checks whether the value resolved by this resolver will
-     * match a particular type.
-     * 
-     * @param string $expected_type the expected type
-     * @param bool $allow_null whether this method will return true if
-     * the value resolved by this resolver is a null
-     * @return bool true if the type matches
-     * @see https://www.php.net/manual/en/language.types.declarations.php
+     * {@inheritdoc}
      */
-    public function checkType($expected_type, $allow_null = true) {
+    public function checkType($expected_type, $allow_null = true): bool {
         if ($allow_null && ($this->value == null)) return true;
         switch ($expected_type) {
             case '*';

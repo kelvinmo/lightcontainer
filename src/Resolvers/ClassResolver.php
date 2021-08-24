@@ -41,7 +41,7 @@ use LightContainer\ContainerException;
 /**
  * A resolver that instantiates a class.
  */
-class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
+class ClassResolver extends BaseInstanceResolver implements AutowireInterface, TypeCheckInterface {
     /**
      * The name of the class to create
      * 
@@ -140,6 +140,14 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
     public function setAutowired(bool $autowired): AutowireInterface {
         $this->autowired = $autowired;
         return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkType($expected_type, $allow_null = true): bool {
+        return is_a($this->class_name, $expected_type);
     }
 
     /**
@@ -279,8 +287,8 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
                 }
 
                 $resolver = array_shift($args);
-                if (($param['type'] != '*') && ($resolver instanceof ValueResolver)) {
-                    // Do type checking for ValueResolvers
+                if (($param['type'] != '*') && ($resolver instanceof TypeCheckInterface)) {
+                    // Do type checking where available
                     if (!$resolver->checkType($param['type'])) {
                         throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
                     }
