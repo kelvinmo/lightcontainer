@@ -162,8 +162,13 @@ class Container implements LightContainerInterface {
         } else {
             if (!$include_autowire) return null;
             if (!class_exists($id)) return null;
-            $this->resolvers[$id] = (new ClassResolver($id))->setAutowired(true);
-            return $this->resolvers[$id];
+            try {
+                $this->resolvers[$id] = (new ClassResolver($id))->setAutowired(true);
+                return $this->resolvers[$id];
+            } catch (\InvalidArgumentException $e) {
+                return null;
+            }
+            
         }
     }
 

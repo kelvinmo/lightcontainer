@@ -83,6 +83,9 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         $refl = new \ReflectionClass($this->class_name);
 
         $constructor = $refl->getConstructor();
+        if (($constructor != null) && !$constructor->isPublic()) {
+            throw new \InvalidArgumentException('Cannot create resolver for class with a non-public constructor');
+        }
         $this->cache['params']['__construct'] = ($constructor != null) ? $this->buildMethodParamsCache($constructor) : [];
         $this->cache['constructor'] = $constructor;
 
@@ -234,7 +237,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
                 // Parameter has a type hint. Note that the type may not necessarily
                 // be a class - it can be an built-in type (e.g. int, array)
                 $entry = [
-                    'type' => $type->getName(),
+                    'type' => ltrim($type->getName(), '?'),
                     'builtin' => $type->isBuiltIn(),
                     'optional' => ($param->allowsNull() || $param->isDefaultValueAvailable())
                 ];
