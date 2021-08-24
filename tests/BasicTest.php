@@ -67,13 +67,6 @@ class BasicTest extends TestCase {
         $this->assertInstanceOf(BasicTestClass::class, $obj);
     }
 
-    public function testInterface() {  // global aliases
-        $container = new Container();
-        $container->set(BasicTestInterface::class, BasicTestInterfaceImpl::class);
-        $obj = $container->get(BasicTestInterface::class);
-        $this->assertInstanceOf(BasicTestInterfaceImpl::class, $obj);
-    }
-
     public function testDependencyGraph() {
         $container = new Container();
         $a = $container->get(BasicTestA::class);
@@ -146,16 +139,6 @@ class BasicTest extends TestCase {
         
         $a = $container->get(BasicTestClass::class);
         $b = $container->get(BasicTestClass::class);
-        $this->assertSame($a, $b);
-    }
-
-    // named instances
-    public function testNamedInstance() {
-        $container = new Container();
-        $container->set('@instance', BasicTestClass::class);
-
-        $a = $container->get('@instance');
-        $b = $container->get('@instance');
         $this->assertSame($a, $b);
     }
 
