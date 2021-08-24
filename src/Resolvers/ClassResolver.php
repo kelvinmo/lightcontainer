@@ -106,9 +106,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      */
     public function alias(...$args) {
         parent::alias(...$args);
-
-        // Clear the resolver cache
-        $this->cache['resolvers'] = [];
+        $this->rebuildCache(['alias' => $this->options['alias']]);
 
         return $this;
     }
@@ -120,12 +118,13 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         if (!method_exists($this->class_name, $method)) {
             throw new \InvalidArgumentException('Method does not exist: ' . $method);
         }
-        parent::call($method, ...$args);
-
-        if (!isset($this->cache['params'][$method])) {
-            $refl = new \ReflectionMethod($this->class_name, $method);
-            $this->cache['params'][$method] = $this->buildMethodParamsCache($refl);
+        $refl = new \ReflectionMethod($this->class_name, $method);
+        if (!$refl->isPublic()) {
+            throw new \InvalidArgumentException('Method does is not public: ' . $method);
         }
+
+        parent::call($method, ...$args);
+        $this->rebuildCache(['call' => [ ['method' => $method] ]]);
 
         return $this;
     }
