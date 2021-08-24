@@ -155,6 +155,15 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      */
     protected function setOptions(array $options) {
         parent::setOptions($options);
+        $this->rebuildCache($options);
+    }
+
+    /**
+     * Flush and rebuild cache based on new instantiation options
+     * 
+     * @param array $options the new instantiation options
+     */
+    protected function rebuildCache(array $options) {
         if (isset($options['alias'])) {
             $this->cache['resolvers'] = [];
         }
@@ -204,9 +213,8 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         foreach ($this->cache['tree'] as $parent) {
             $parent_resolver = $container->getResolver($parent, false);
             if (($parent_resolver != null) && $parent_resolver->options['propagate']) {
-                // TODO clear and reset cache if $parent_resolver->options has ['alias']???
-                // TODO array_merge for everything other than call?
-                $options = array_merge($parent_resolver->options, $options);
+                $options = $parent_resolver->options;
+                $this->rebuildCache($options);
                 break;
             }
         }
