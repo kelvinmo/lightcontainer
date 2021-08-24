@@ -132,27 +132,26 @@ class ReferenceResolver extends BaseInstanceResolver {
         if ($this->hasSharedObject()) return $this->getSharedObject();
 
         // 2. Get the target resolver
-        $target_resolver = $this->getTargetResolver($container);
-        if ($target_resolver == null) {
+        $resolver = $this->getTargetResolver($container);
+        if ($resolver == null) {
             throw new NotFoundException('Cannot resolve reference to: ' . $this->target);
         }
 
         // 3. Clone the resolver if the target resolver is a ClassResolver
         //    and the target resolver is not shared.  This way we can set specific
         //    options for the resolver
-        if (($target_resolver instanceof ClassResolver) && !$target_resolver->buildIsShared($container)) {
+        if (($resolver instanceof ClassResolver) && !$resolver->buildIsShared($container)) {
             // TODO buildIsShared or is cached?
-            $resolver = clone $target_resolver;
-            $resolver->setAutowired(false);
+            // Determine whether this needs to be cloned
+            $resolver = clone $resolver;
+            $resolver->setAutowired(false); // TODO only if options are set
 
-            // Set options - only alias, args and call are set
-            foreach (['alias', 'args', 'call'] as $option) {
-                if (!empty($this->options[$option])) {
-                    $resolver->options[$option] = $this->options[$option];
-                }
-            }
-        } else {
-            $resolver = $target_resolver;
+            // Set options - only alias, args and call should be set
+            $options = array_filter($this->options, function ($v, $k) { 
+                return (in_array($k, ['alias', 'args', 'call']) && !empty($v)); 
+            }, ARRAY_FILTER_USE_BOTH);
+
+            $resolver->setOptions($options);
         }
 
         // 4. Create the object

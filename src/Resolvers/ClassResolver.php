@@ -146,8 +146,19 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface {
      * {@inheritdoc}
      */
     protected function setOptions(array $options) {
-        // TODO check method exists and remove if doesn't, clear caches
         parent::setOptions($options);
+        if (isset($options['alias'])) {
+            $this->cache['resolvers'] = [];
+        }
+        if (isset($options['call'])) {
+            foreach ($options['call'] as $call) {
+                $method = $call['method'];
+                if (!isset($this->cache['params'][$method])) {
+                    $refl = new \ReflectionMethod($this->class_name, $method);
+                    $this->cache['params'][$method] = $this->buildMethodParamsCache($refl);
+                }
+            }
+        }
     }
 
     /**

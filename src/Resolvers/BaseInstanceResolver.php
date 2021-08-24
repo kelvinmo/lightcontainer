@@ -234,10 +234,10 @@ class BaseInstanceResolver implements ResolverInterface {
     /**
      * Sets the instantiation options.
      * 
-     * @param array $options the instantiation option.
+     * @param array $options the instantiation options
      */
     protected function setOptions(array $options) {
-        $this->options = $options;
+        $this->options = array_merge($this->options, $options);
     }
 
     /**
