@@ -70,7 +70,7 @@ class Container implements LightContainerInterface {
     protected $self_resolver;
 
     public function __construct() {
-        $this->self_resolver = new ValueResolver($this);
+        $this->self_resolver = ValueResolver::create($this);
         $this->set(self::class, $this->self_resolver);
     }
     
@@ -104,7 +104,7 @@ class Container implements LightContainerInterface {
                     $resolver->setNamedInstance();
                 }
             } else {
-                $resolver = new ValueResolver($value);
+                $resolver = ValueResolver::create($value);
             }
         } elseif (class_exists($id)) {
             $resolver = new ClassResolver($id);
@@ -191,7 +191,7 @@ class Container implements LightContainerInterface {
      * @return ValueResolver the resolver
      */
     public static function value($value) {
-        return new ValueResolver($value);
+        return ValueResolver::create($value);
     }
 
     public static function ref(string $id) {

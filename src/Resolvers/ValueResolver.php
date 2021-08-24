@@ -44,7 +44,11 @@ use LightContainer\LightContainerInterface;
  * configuration information) in the container.
  */
 class ValueResolver implements ResolverInterface, TypeCheckInterface {
-    private static $nullResolver = null;
+    private static $cache = [
+        'null' => null,
+        'true' => null,
+        'false' => null
+    ];
 
     protected $value;
 
@@ -53,8 +57,42 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface {
      * 
      * @param mixed $value the value to return
      */
-    public function __construct($value) {
+    protected function __construct($value) {
         $this->value = $value;
+    }
+
+    /**
+     * Creates a ValueResolver with the specified value
+     * 
+     * @param mixed $value the value to return
+     */
+    public static function create($value): ValueResolver {
+        if ($value == null) {
+            return self::nullResolver();
+        } elseif ($value === true) {
+            return self::getCachedResolver('true', true);
+        } elseif ($value === false) {
+            return self::getCachedResolver('false', false);
+        } else {
+            return new ValueResolver($value);
+        }
+    }
+
+    protected static function getCachedResolver(string $key, $value): ValueResolver {
+        if (self::$cache[$key] == null) {
+            self::$cache[$key] = new ValueResolver($value);
+        }
+ 
+        return self::$cache[$key];
+    }
+
+    /**
+     * Returns a value resolver that resolves to a null.
+     * 
+     * @return ValueResolver
+     */
+    public static function nullResolver(): ValueResolver {
+        return self::getCachedResolver('null', null);
     }
 
     /**
@@ -101,19 +139,6 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface {
      */
     public function resolve(LightContainerInterface $container) {
         return $this->value;
-    }
-
-    /**
-     * Returns a value resolver that resolves to a null.
-     * 
-     * @return ValueResolver
-     */
-    public static function nullResolver(): ValueResolver {
-        if (self::$nullResolver == null) {
-            self::$nullResolver = new ValueResolver(null);
-        }
- 
-        return self::$nullResolver;
     }
 }
 

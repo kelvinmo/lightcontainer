@@ -142,6 +142,7 @@ class BaseInstanceResolver implements ResolverInterface {
      * 
      * @param $args the aliases
      * @return BaseInstanceResolver
+     * @throws InvalidArgumentException
      */
     public function alias(...$args) {
         if (count($args) == 2) {
@@ -224,10 +225,8 @@ class BaseInstanceResolver implements ResolverInterface {
         foreach ($args as $arg) {
             if ($arg instanceof ResolverInterface) {
                 $resolvers[] = $arg;
-            } elseif ($arg == null) {
-                $resolvers[] = ValueResolver::nullResolver();
             } else {
-                $resolvers[] = new ValueResolver($arg);
+                $resolvers[] = ValueResolver::create($arg);
             }
         }
 
