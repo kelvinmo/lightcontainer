@@ -229,31 +229,39 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         return $options;
     }
 
+    /**
+     * Builds an array of parameter properties for a specified method
+     * 
+     * @param ReflectionMethod $method the reflection object on the specified
+     * method
+     * @return array an array of key properties of each parameter
+     */
     protected function buildMethodParamsCache(\ReflectionMethod $method): array {
         $results = [];
 
         foreach ($method->getParameters() as $param) {
             $type = $param->getType();
 
+            // We consider nullable types to be optional as we can inject nulls
+            // if we need to
+            $entry = [
+                'optional' => ($param->allowsNull() || $param->isDefaultValueAvailable()),
+                'allow_null' => $param->allowsNull()
+            ];
+            if ($param->isDefaultValueAvailable()) {
+                $entry['default'] = $param->getDefaultValue();
+            }
+
             if ($type instanceof \ReflectionNamedType) {
                 // Parameter has a type hint. Note that the type may not necessarily
                 // be a class - it can be an built-in type (e.g. int, array)
-                $entry = [
-                    'type' => ltrim($type->getName(), '?'),
-                    'builtin' => $type->isBuiltIn(),
-                    'optional' => ($param->allowsNull() || $param->isDefaultValueAvailable())
-                ];
+                $entry['type'] = ltrim($type->getName(), '?');
+                $entry['builtin'] = $type->isBuiltIn();
             } else {
                 // Type hint is a ReflectionUnionType or no type hint
                 // at all
-                $entry = [
-                    'type' => ($param->isVariadic()) ? '...' : '*',
-                    'builtin' => true,
-                    'optional' => $param->isDefaultValueAvailable()
-                ];
-            }
-            if ($param->isDefaultValueAvailable()) {
-                $entry['default'] = $param->getDefaultValue();
+                $entry['type'] = ($param->isVariadic()) ? '...' : '*';
+                $entry['builtin'] = true;
             }
 
             $results[]  = $entry;
@@ -262,6 +270,17 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         return $results;
     }
 
+    /**
+     * Builds an array of resolvers to provide arguments to a specified constructor
+     * or method.  The method returns an array of resolvers implementing
+     * {@link ResolverInterface}, which can be resolved to provide the
+     * argument values to the constructor or method
+     * 
+     * @param string $method the method to call, or `__construct` for the
+     * constructor
+     * @param array $options the instantiation options
+     * @return array an array of resolvers
+     */
     protected function buildMethodResolvers(string $method, array $options): array {
         $resolvers = [];
         $params = $this->cache['params'][$method];
@@ -296,14 +315,18 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
                     if (!$param['optional']) {
                         throw new ContainerException('Mandatory parameter ' . $n . ' not provided for method ' . $method);
                     }
-                    break;
-                }
+                    // Truly optional because a default value is specified
+                    if (isset($param['default'])) break;
 
-                $resolver = array_shift($args);
-                if (($param['type'] != '*') && ($resolver instanceof TypeCheckInterface)) {
-                    // Do type checking where available
-                    if (!$resolver->checkType($param['type'])) {
-                        throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
+                    // Otherwise, it's just a nullable and so we pass on null
+                    $resolver = ValueResolver::nullResolver();
+                } else {
+                    $resolver = array_shift($args);
+                    if (($param['type'] != '*') && ($resolver instanceof TypeCheckInterface)) {
+                        // Do type checking where available
+                        if (!$resolver->checkType($param['type'], $param['allow_null'])) {
+                            throw new ContainerException('Incorrect type given for parameter ' . $n . ': expected ' . $param['type']);
+                        }
                     }
                 }
 

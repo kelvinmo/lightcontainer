@@ -12,6 +12,7 @@ class ConstructorTestClass {}
 
 interface ConstructorTestInterfaceA {}
 interface ConstructorTestInterfaceB {}
+interface ConstructorTestInterfaceNoImpl {}
 
 class ConstructorTestImplA implements ConstructorTestInterfaceA {}
 class ConstructorTestImplA2 implements ConstructorTestInterfaceA {}
@@ -59,6 +60,27 @@ class ConstructorTestOptionalInterface {
     }
 }
 
+class ConstructorTestNoImplementation {
+    public function __construct(ConstructorTestInterfaceNoImpl $a) {
+    }
+}
+
+class ConstructorTestNoImplementationOptional {
+    public $a = 'something';
+
+    public function __construct(?ConstructorTestInterfaceNoImpl $a) {
+        $this->a = $a;
+    }
+}
+
+class ConstructorTestNoImplementationDefault {
+    public $a = 'something';
+
+    public function __construct(ConstructorTestInterfaceNoImpl $a = null) {
+        $this->a = $a;
+    }
+}
+
 class ConstructorTestArgs {
     public $a = null;
     public $host = null;
@@ -94,9 +116,17 @@ class ConstructorTestNested {
 }
 
 class ConstructorTestNullArg {
+    public $a = 'something';
+
+    public function __construct(?string $a) {
+        $this->a = $a;
+    }
+}
+
+class ConstructorTestOptionalArg {
     public $a;
 
-    public function __construct(string $a = null) {
+    public function __construct(string $a = 'something') {
         $this->a = $a;
     }
 }
@@ -156,6 +186,24 @@ class ConstructorTest extends TestCase {
         $container->set(ConstructorTestOptionalInterface::class)
             ->alias(ConstructorTestInterfaceA::class, null);
         $obj = $container->get(ConstructorTestOptionalInterface::class);
+        $this->assertNull($obj->a);
+    }
+
+    public function testNoImplementation() {
+        $this->expectException('Psr\\Container\\NotFoundExceptionInterface');
+        $container = new Container();
+        $obj = $container->get(ConstructorTestNoImplementation::class);
+    }
+
+    public function testNoImplementationOptional() {
+        $container = new Container();
+        $obj = $container->get(ConstructorTestNoImplementationOptional::class);
+        $this->assertNull($obj->a);
+    }
+
+    public function testNoImplementationDefault() {
+        $container = new Container();
+        $obj = $container->get(ConstructorTestNoImplementationDefault::class);
         $this->assertNull($obj->a);
     }
 
@@ -233,10 +281,14 @@ class ConstructorTest extends TestCase {
 
     public function testNullArg() {
         $container = new Container();
-        $container->set(ConstructorTestNullArg::class)->args(null);
-
         $obj = $container->get(ConstructorTestNullArg::class);
         $this->assertNull($obj->a);
+    }
+
+    public function testOptionalArg() {
+        $container = new Container();
+        $obj = $container->get(ConstructorTestOptionalArg::class);
+        $this->assertEquals('something', $obj->a);
     }
 }
 ?>
