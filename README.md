@@ -26,6 +26,7 @@ that supports autowiring.
   * [Storing arbitrary values](#storing-arbitrary-values)
 * [Reference](#reference)
   * [Resolvers](#resolvers)
+  * [Autowiring](#autowiring)
   * [Instantiation options reference](#instantiation-options-reference)
 * [Licence](#licence)
 
