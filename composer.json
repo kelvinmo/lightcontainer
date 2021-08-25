@@ -1,7 +1,8 @@
 {
     "name": "kelvinmo/lightcontainer",
     "description": "A lightweight, autowiring, PSR-11 compliant container",
-    "provider": {
+    "keywords": [ "container", "PSR-11", "di", "dependency-injection" ],
+    "provide": {
         "psr/container-implementation": "1.0"
     },
     "require": {
