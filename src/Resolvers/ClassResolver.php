@@ -184,30 +184,34 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      * all calls to this resolver.
      * 
      * If this resolver is autowired, this method calls
-     * {@link buildOptionsFromParents()} to get the instantiation
+     * {@link resolveAutowiredOptions()} to get the instantiation
      *  options array from the parents, then returns the value of the
-     * `shared` option.
+     * `shared` option.  Otherwise, it returns the `shared` options from
+     * this resolver's instantiation options array.
      * 
+     * @param LightContainerInterface $container the container providing
+     * the parent resolvers
      * @return bool true if shared
      */
-    public function buildIsShared(LightContainerInterface $container) {
+    public function resolveShared(LightContainerInterface $container) {
         if (!$this->isAutowired()) return $this->options['shared'];
 
-        $options = $this->buildOptionsFromParents($container);
+        $options = $this->resolveAutowiredOptions($container);
         return $options['shared'];
     }
 
     /**
-     * Builds the instantiation options array from resolvers for the parents
-     * of this class.
+     * Resolve the instantiation options array for an autowired resolver,
+     * based on the resolvers for the parents of the autowired class.
      * 
      * If this resolver is *not* autowired, this returns the instantiation
      * options set for this resolver
      * 
-     * @param LightContainerInterface $container 
-     * @return array
+     * @param LightContainerInterface $container the container providing
+     * the parent resolvers
+     * @return array the resolved instantiation options array
      */
-    protected function buildOptionsFromParents(LightContainerInterface $container): array {
+    protected function resolveAutowiredOptions(LightContainerInterface $container): array {
         if (!$this->isAutowired()) return $this->options;
 
         $options = [];

@@ -97,6 +97,21 @@ class ReferenceResolver extends BaseInstanceResolver {
     }
 
     /**
+     * Returns whether custom instantiation options `alias`,
+     * `args` and `call` have been set for this resolver.  In these
+     * cases the target resolver may need to be cloned instead of
+     * being referenced directly.
+     * 
+     * Note that the instantiation option `shared` is excluded
+     * from this process.
+     * 
+     * @return bool true if custom instantiation options are set
+     */
+    public function hasCustomOptions(): bool {
+        return (!empty($this->options['alias']) || !empty($this->options['args']) || !empty($this->options['call']));
+    }
+
+    /**
      * Retrieves the identifier of the target referenced by this
      * resolver.
      * 
@@ -138,11 +153,11 @@ class ReferenceResolver extends BaseInstanceResolver {
         // 3. Clone the resolver if the target resolver is a ClassResolver
         //    and the target resolver is not shared.  This way we can set specific
         //    options for the resolver
-        if (($resolver instanceof ClassResolver) && !$resolver->buildIsShared($container)) {
-            // TODO buildIsShared or is cached?
-            // Determine whether this needs to be cloned
+        if (($resolver instanceof ClassResolver)
+            && !$resolver->resolveShared($container)
+            && $this->hasCustomOptions()) {
             $resolver = clone $resolver;
-            $resolver->setAutowired(false); // TODO only if options are set
+            $resolver->setAutowired(false);
 
             // Set options - only alias, args and call should be set
             $options = array_filter($this->options, function ($v, $k) { 
