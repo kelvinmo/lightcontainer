@@ -100,7 +100,7 @@ class Container implements LightContainerInterface {
                 // TODO Should we set this to a named instance if $id is not an
                 // existing class/interface?
                 // Or if it contains an invalid class/interface character?
-                if (!self::isValidClassName($id)) {
+                if (!self::isValidTypeName($id)) {
                     $resolver->setNamedInstance();
                 }
             } else {
@@ -173,14 +173,14 @@ class Container implements LightContainerInterface {
     }
 
     /**
-     * Determines whether or not a string resembles a valid class, interface
-     * or trait name, regardless of whether the class, interface or trait
+     * Determines whether or not a string resembles a valid type (class, interface
+     * or trait name), regardless of whether the type
      * exists.
      * 
      * @param string $name the name to test
-     * @return bool truw if the name is a valid class name
+     * @return bool truw if the name is a valid type name
      */
-    protected static function isValidClassName(string $name): bool {
+    protected static function isValidTypeName(string $name): bool {
         return preg_match(self::CLASS_NAME_REGEX, $name);
     }
 
