@@ -77,12 +77,15 @@ LightContainer figures out the dependencies based on the type hints
 provided by the constructor parameters, and then configures itself
 to create the necessary objects.  This is *autowiring*.
 
+Further details on how autowiring works can be found in the
+[reference](#autowiring).
+
 ## Configuration
 
 ### Introduction
 
 You can configure the container through the `set` method.  This method can be
-called with up to two parameters: a string [entry identifier], and an optional
+called with up to two parameters: a string *entry identifier*, and an optional
 value. The main ways you can use this method is used to configure the
 container are set out in this section, with further details can be found
 in the [reference](#reference) section below.
@@ -255,7 +258,8 @@ class J {
 ```
 
 To get the container to call `setA` to inject `A` whenever `J` is created,
-use the `call` method to specify the method to call.
+use the `call` method to specify the method to call.  [Autowiring](#autowiring)
+works in the same way as for constructor injection.
 
 ```php
 $container->set(J::class)->call('setA');
@@ -264,7 +268,7 @@ $container->set(J::class)->call('setA');
 The `call` method also takes additional arguments, which will be passed
 on to the setter method.  The rules for specifying additional arguments are the
 same as for [constructors](#constructor-arguments).  In addition,
-[aliases](#aliases) and [global aliases](#global-aliases) will also be
+[aliases](#aliases) and [global aliases](#global-aliases) are also
 resolved in the same way as for constructor injection.
 
 ```php
@@ -303,7 +307,7 @@ exception.
 
 #### Options for autowired resolvers
 
-*Autowired* resolvers are created automatically by the container as part of
+*Autowired resolvers* are created automatically by the container as part of
 the autowiring process. As autowired resolvers do not have an explicit entry
 in the container, they inherit the instantiation options for the immediate
 ancestor class that have an entry in the container.
@@ -359,8 +363,8 @@ class as the second argument.
 
 **TO BE CONFIRMED.**  Note that the class or interface does not actually
 need to exist.  LightContainer only checks whether the first argument only
-contains characters that can be used as a class, interface or trait
-name (including the associated namespace), and if it does, it treats the
+contains characters that can be used as the fully qualified name of a type
+(i.e. including the namespace), and if it does, it treats the
 entry as a global alias.  Otherwise it treats the entry as a
 [named instance](#multiple-shared-instances).
 
@@ -501,27 +505,93 @@ by instantiating it from the specified class.  Other key kinds of resolvers
 include a *reference resolver*, which looks up another entry in the container,
 and a *value resolver*, which simply returns a specified value.
 
-The `set` method takes the entry identifier string and the specified value,
+The `set` method takes the string entry identifier and the specified value,
 creates and registers a resolver, and then returns it to the user.  The
 kind of resolver the method creates depends on the format of
 the entry identifier, and the type of value that is specified.  These are
 set out in the table below.
 
-| Identifier                                                   | Value           | Resolver           | Description                                                  |
-| ------------------------------------------------------------ | --------------- | ------------------ | ------------------------------------------------------------ |
-| Name of an existing class                                    | None            | Class resolver     | Sets [instantiation options](#instantiation-options) for that class |
-| A valid class/interface/trait name (whether or not it exists) | A string        | Reference resolver | Sets a [global alias](#global-aliases)                       |
-| `*`                                                          | None            | Class resolver*    | Sets default [instantiation options](#instantiation-options) for autowired resolvers |
-| Any other string                                             | A string        | Reference resolver | Creates a [named instance](#multiple-shared-instances)       |
-| Any other string                                             | A callable      | Factory resolver   | Sets a [custom instantiation function](#custom-instantiation) |
-| Any other string                                             | Any other value | Value resolver     | Stores an [arbitrary value](#storing-arbitrary-values) in the container |
+| Identifier                                   | Value           | Resolver           | Description                                                  |
+| -------------------------------------------- | --------------- | ------------------ | ------------------------------------------------------------ |
+| Name of an existing class                    | None            | Class resolver     | Sets [instantiation options](#instantiation-options) for that class |
+| A valid type name (whether or not it exists) | A string        | Reference resolver | Sets a [global alias](#global-aliases)                       |
+| `*`                                          | None            | Class resolver*    | Sets default [instantiation options](#instantiation-options) for autowired resolvers |
+| Any other string                             | A string        | Reference resolver | Creates a [named instance](#multiple-shared-instances)       |
+| Any other string                             | A callable      | Factory resolver   | Sets a [custom instantiation function](#custom-instantiation) |
+| Any other string                             | Any other value | Value resolver     | Stores an [arbitrary value](#storing-arbitrary-values) in the container |
 
 The class resolver returned for `*` is a special kind of class resolver.  It
 cannot be called to resolve to an actual object.
 
+### Autowiring
+
+Autowiring works by using PHP reflection to examine the parameters of the
+constructor (or setter method).  If any parameter has a type hint, and the
+hinted type is not a built-in literal type, it looks up the container to see if
+there is an existing entry with the type as the entry identifier. If an entry
+does not exist, but the specified type is a class and the class exists,
+the container then creates a class resolver (the *autowired resolver*)
+for that type automatically.  The instantiation options for this autowired
+resolver are set based on the
+[propagation rules](#options-for-autowired-resolvers) described above.
+
+Note that when injecting parameters into the constructor or setter method,
+the nullable market (`?`) and default value declarations are initially ignored.
+The container will try to create and inject an instance of a particular
+type even it is declared nullable or contain a default value.  Only if the
+container cannot create an instance will a null or default value be used.
+
+```php
+interface ImplementedInterface {}
+class InterfaceImplementation implements ImplementedInterface {}
+
+interface UnimplementedInterface {}
+
+class P1 {
+    function __construct(?ImplementedInterface $i) {}
+}
+class P2 {
+    function __construct(ImplementedInterface $i = null) {}
+}
+
+class Q1 {
+    function __construct(?UnimplementedInterface $i) {}
+}
+class Q2 {
+    function __construct(UnimplementedInterface $i = null) {}
+}
+
+$container->set(ImplementedInterface::class, InterfaceImplementation::class);
+
+// $p1->i and $p2->i will both contain a InterfaceImplementation,
+// as an alias is registered for ImplementedInterface and the aliased class
+// exists
+$p1 = $container->get(P1::class);
+$p2 = $container->get(P2::class);
+
+// $q1->i and $q2->i will both be null, as there is no alias registered for
+// UnimplementedInterface
+$q1 = $container->get(Q1::class);
+$q2 = $container->get(Q2::class);
+```
+
+In order to pass a null as an argument to a nullable type, you have to use
+`alias` to explicitly declare an alias to null.
+
+```php
+$container->set(P1::class)->alias(ImplementedInterface::class, null);
+$container->set(P2::class)->alias(ImplementedInterface::class, null);
+
+// $p1->i and $p2->i are now both null
+$p1 = $container->get(P1::class);
+$p2 = $container->get(P2::class);
+```
+
 ### Instantiation options reference
 
-name, default, can be used in reference resolvers, description (with link)
+The following instantiation options are available for class resolvers.  These
+options (apart from `propagate`) are also available for
+[global aliases](#global-aliases).
 
 | Option                                          | Default                                                      | Description                                                  |
 | ----------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
