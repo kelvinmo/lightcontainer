@@ -63,8 +63,8 @@ class ReferenceResolver extends BaseInstanceResolver {
      * 
      * @param string $target the identifier of the target
      */
-    public function __construct(string $target) {
-        parent::__construct(['propagate' => false]);
+    public function __construct(string $target, ?ResolverInterface $default_resolver = null) {
+        parent::__construct(['propagate' => false, 'default' => $default_resolver]);
         $this->target = $target;
     }
 
@@ -147,7 +147,11 @@ class ReferenceResolver extends BaseInstanceResolver {
         // 2. Get the target resolver
         $resolver = $this->getTargetResolver($container);
         if ($resolver == null) {
-            throw new NotFoundException('Cannot resolve reference to: ' . $this->target);
+            if ($this->options['default'] != null) {
+                return $this->options['default']->resolve($container);
+            } else {
+                throw new NotFoundException('Cannot resolve reference to: ' . $this->target);
+            }
         }
 
         // 3. Clone the resolver if the target resolver is a ClassResolver

@@ -309,6 +309,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
 
                 $resolvers[] = $resolver;
             } else {
+                // Type hint (other than builtin types)
                 try {
                     if (isset($options['alias'][$param['type']])) {
                         if ($options['alias'][$param['type']] == null) {
@@ -316,12 +317,18 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
                         } else {
                             $resolvers[] = new ReferenceResolver($options['alias'][$param['type']]);
                         }
-                    } elseif (!$param['optional']) {
-                        $resolvers[] = new ReferenceResolver($param['type']);
-                    } elseif (isset($param['default'])) {
-                        $resolvers[] = new ValueResolver($param['default']);
                     } else {
-                        $resolvers[] = ValueResolver::nullResolver();
+                        if ($param['optional']) {
+                            if (isset($param['default'])) {
+                                $default_resolver = ValueResolver::create($param['default']);
+                            } else {
+                                $default_resolver = ValueResolver::nullResolver();
+                            }
+                        } else {
+                            $default_resolver = null;
+                        }
+
+                        $resolvers[] = new ReferenceResolver($param['type'], $default_resolver);
                     }
                 } catch (\InvalidArgumentException $e) {
 
@@ -339,7 +346,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
 
         // 2. Get options from parent classes if autowired
         if ($this->isAutowired()) {
-            $options = $this->buildOptionsFromParents($container);
+            $options = $this->resolveAutowiredOptions($container);
         } else {
             $options = $this->options;
         }

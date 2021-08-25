@@ -133,11 +133,19 @@ class ConstructorTest extends TestCase {
     public function testOptionalClass() {
         $container = new Container();
         $obj = $container->get(ConstructorTestOptionalClass::class);
+        $this->assertInstanceOf(ConstructorTestClass::class, $obj->a);
+    }
+
+    public function testOptionalClassWithNull() {
+        $container = new Container();
+        $container->set(ConstructorTestOptionalClass::class)->alias(ConstructorTestClass::class, null);
+        $obj = $container->get(ConstructorTestOptionalClass::class);
         $this->assertNull($obj->a);
     }
 
     public function testNullableClass() {
         $container = new Container();
+        $container->set(ConstructorTestNullableClass::class)->alias(ConstructorTestClass::class, null);
         $obj = $container->get(ConstructorTestNullableClass::class);
         $this->assertNull($obj->a);
     }
@@ -145,10 +153,13 @@ class ConstructorTest extends TestCase {
     public function testOptionalInterface() {
         $container = new Container();
         $container->set(ConstructorTestInterfaceA::class, ConstructorTestImplA::class);
+        $container->set(ConstructorTestOptionalInterface::class)
+            ->alias(ConstructorTestInterfaceA::class, null);
         $obj = $container->get(ConstructorTestOptionalInterface::class);
         $this->assertNull($obj->a);
     }
 
+    // Constructor arguments
     public function testArgs() {
         $container = new Container();
         $container->set(ConstructorTestArgs::class)->args('example.com', 8080);

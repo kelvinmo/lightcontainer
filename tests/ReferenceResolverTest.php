@@ -75,7 +75,7 @@ class ReferenceResolverTest extends TestCase {
         $this->assertSame($a, $b);
     }
 
-    public function testNamedInstanceShared() {
+    public function testNamedInstanceSetShared() {
         $this->expectException('InvalidArgumentException');
 
         $container = new Container();
