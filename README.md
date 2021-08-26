@@ -477,9 +477,9 @@ It is recommended that you use an identifier that cannot be confused with a
 class name (e.g. by adding an invalid character for a class name, like `@`
 in the example above).
 
-**WARNING.** If you want to store a string or a callable, you will need to
-wrap it with using `Container::value()`.  Otherwise LightContainer will treat
-it as a [global alias](#global-aliases) or a
+**WARNING.** If you want to store `null`, a string or a callable, you will need
+to wrap it with using `Container::value()`.  Otherwise LightContainer will
+treat it as a [global alias](#global-aliases) or a
 [custom instantiation function](#custom-instantiation).
 
 ```php
