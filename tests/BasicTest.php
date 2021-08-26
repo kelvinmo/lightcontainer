@@ -161,6 +161,8 @@ class BasicTest extends TestCase {
         $obj = new BasicTestClass();
 
         $container = new Container();
+        $container->set('@null', Container::value(null));
+        $container->set('@bool', false);
         $container->set('@port', 8080);
         $container->set('@db', Container::value('example.com'));
         $container->set('@paramArray', [1, 2, 3]);
@@ -169,6 +171,8 @@ class BasicTest extends TestCase {
 
         $paramHash = $container->get('@paramHash');
 
+        $this->assertNull($container->get('@null'));
+        $this->assertEquals(false, $container->get('@bool'));
         $this->assertEquals(8080, $container->get('@port'));
         $this->assertEquals('example.com', $container->get('@db'));
         $this->assertEquals('123', implode('', $container->get('@paramArray')));

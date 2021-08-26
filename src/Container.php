@@ -87,7 +87,7 @@ class Container implements LightContainerInterface {
 
         if ($id == '*') {
             $resolver = new BaseInstanceResolver();
-        } elseif ($value != null) {
+        } elseif ($value !== null) {
             if ($value instanceof ResolverInterface) {
                 // We clone the resolver to make sure caches are cleared
                 $resolver = clone $value;
