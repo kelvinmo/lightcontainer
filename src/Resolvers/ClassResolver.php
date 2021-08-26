@@ -307,7 +307,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
                     if ($value instanceof ResolverInterface) {
                         $resolvers[] = $value;
                     } else {
-                        $resolvers[] = new ValueResolver($value);
+                        $resolvers[] = ValueResolver::create($value);
                     }
                 }
                 break;
