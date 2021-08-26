@@ -41,58 +41,71 @@ use LightContainer\LightContainerInterface;
  * A resolver that resolves to a specified value.
  * 
  * This resolver is useful for storing fixed values (such as
- * configuration information) in the container.
+ * configuration information) in the container.  Internally, this resolver
+ * is also used by BaseInstanceResolver to store argument values that
+ * can be passed on during constructor or setter injection.
  */
 class ValueResolver implements ResolverInterface, TypeCheckInterface {
-    private static $cache = [
+    private static $shared = [
         'null' => null,
         'true' => null,
         'false' => null
     ];
 
+    /** @var mixed */
     protected $value;
 
     /**
      * Creates a ValueResolver with the specified value
      * 
-     * @param mixed $value the value to return
+     * @param mixed $value the value
      */
     protected function __construct($value) {
         $this->value = $value;
     }
 
     /**
-     * Creates a ValueResolver with the specified value
+     * Creates a ValueResolver with the specified value.
      * 
-     * @param mixed $value the value to return
+     * The resolvers for the values `true`, `false` and `null`
+     * are shared singletons.  A call to this method with any
+     * of these values will return the same resolver
+     * 
+     * @param mixed $value the value
+     * @return ValueResolver the value resolver
      */
     public static function create($value): ValueResolver {
         if ($value == null) {
             return self::nullResolver();
         } elseif ($value === true) {
-            return self::getCachedResolver('true', true);
+            return self::getSharedResolver('true', true);
         } elseif ($value === false) {
-            return self::getCachedResolver('false', false);
+            return self::getSharedResolver('false', false);
         } else {
             return new ValueResolver($value);
         }
     }
 
-    protected static function getCachedResolver(string $key, $value): ValueResolver {
-        if (self::$cache[$key] == null) {
-            self::$cache[$key] = new ValueResolver($value);
+    /**
+     * 
+     */
+    protected static function getSharedResolver(string $key, $value): ValueResolver {
+        if (self::$shared[$key] == null) {
+            self::$shared[$key] = new ValueResolver($value);
         }
  
-        return self::$cache[$key];
+        return self::$shared[$key];
     }
 
     /**
      * Returns a value resolver that resolves to a null.
      * 
+     * This is a convenience function for `ValueResolver::create(null)`
+     * 
      * @return ValueResolver
      */
     public static function nullResolver(): ValueResolver {
-        return self::getCachedResolver('null', null);
+        return self::getSharedResolver('null', null);
     }
 
     /**

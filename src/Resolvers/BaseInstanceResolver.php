@@ -39,7 +39,7 @@ use LightContainer\LightContainerInterface;
 use LightContainer\NotFoundException;
 
 /**
- * A class for resolvers that can resolve to an instance
+ * A base class for resolvers that can resolve to an instance
  * of an object.
  * 
  * This class provides methods for setting instantiation options,
@@ -50,6 +50,13 @@ use LightContainer\NotFoundException;
  * necessarily resolve to an object all the time.  For example, a
  * {@link ReferenceResolver} can resolve to anything that the
  * container can resolve, not just objects.
+ * 
+ * The two resolvers that are derived from this class are:
+ * 
+ * - {@link ClassResolver} - a resolver that creates an instance
+ *   of a specified class
+ * - {@link ReferenceResolver} - a resolver that looks up another
+ *   entry in the container
  */
 class BaseInstanceResolver implements ResolverInterface {
     /**
@@ -277,6 +284,9 @@ class BaseInstanceResolver implements ResolverInterface {
         throw new NotFoundException('Cannot resolve without an underlying class');
     }
 
+    /**
+     * Remove the shared object from clone.
+     */
     public function __clone() {
         $this->shared = null;
     }

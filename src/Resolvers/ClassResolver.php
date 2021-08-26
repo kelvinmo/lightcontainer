@@ -39,7 +39,11 @@ use LightContainer\LightContainerInterface;
 use LightContainer\ContainerException;
 
 /**
- * A resolver that instantiates a class.
+ * A resolver that resolves by creating an instance of a specified class.
+ * 
+ * This is the key
+ * 
+ * Autowiring
  */
 class ClassResolver extends BaseInstanceResolver implements AutowireInterface, TypeCheckInterface {
     /**

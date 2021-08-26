@@ -50,17 +50,17 @@ namespace LightContainer\Resolvers;
  */
 interface AutowireInterface {
     /**
-     * Returns whether this resolver has been created by autowiring
+     * Returns whether this resolver was created by autowiring
      * 
-     * @return bool true if the resolver has been created by
+     * @return bool true if the resolver was created by
      * autowiring
      */
     public function isAutowired(): bool;
 
     /**
-     * Sets whether the resolver has been created by autowiring
+     * Sets whether the resolver was created by autowiring
      * 
-     * @param bool $autowired true if the resolver has been created by
+     * @param bool $autowired true if the resolver was created by
      * autowiring
      */
     public function setAutowired(bool $autowired): AutowireInterface;

@@ -185,16 +185,28 @@ class Container implements LightContainerInterface {
     }
 
     /**
-     * Utility function to wrap a value with a ValueResolver
+     * Utility function to wrap a value with a ValueResolver.  This may be
+     * required when storing string values using {@link set()}, where
+     * by default strings are recognised as global aliases.
      * 
      * @param mixed $value the value to wrap
-     * @return ValueResolver the resolver
+     * @return ResolverInterface the resolver
      */
-    public static function value($value) {
+    public static function value($value): ResolverInterface {
         return ValueResolver::create($value);
     }
 
-    public static function ref(string $id) {
+    /**
+     * Utility function to wrap a string with a ReferenceResolver.  This may be
+     * required when passing on non-type hinted arguments using
+     * {@link ClassResolver::args()} or {@link ClassResolver::call()}, where
+     * by default strings are recognised as literal values rather than
+     * references to entries in the container.
+     * 
+     * @param string $id the entry identifier to wrap
+     * @return ResolverInterface the resolver
+     */
+    public static function ref(string $id): ResolverInterface {
         return new ReferenceResolver($id);
     }
 
@@ -202,9 +214,9 @@ class Container implements LightContainerInterface {
      * Returns a ValueResolver that resolves to the instance of the
      * container.
      * 
-     * @return ValueResolver the resolver
+     * @return ResolverInterface the resolver
      */
-    public function getSelfResolver() {
+    public function getSelfResolver(): ResolverInterface {
         return $this->self_resolver;
     }
 }

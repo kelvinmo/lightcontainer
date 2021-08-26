@@ -39,8 +39,15 @@ use LightContainer\LightContainerInterface;
 use LightContainer\NotFoundException;
 
 /**
- * A resolver that resolves to an object by calling another resolver
- * registered in the container.
+ * A resolver that resolves to an object by looking up another entry
+ * from the container, obtaining the resolver for that entry from the
+ * container (which may be created by autowiring), then using that to
+ * resolve.
+ * 
+ * ReferenceResolvers are used for aliases (both entry and global) and
+ * named instances.  Internally this resolver is also used by
+ * ClassResolver to resolve type-hinted parameters during constructor
+ * or setter injection.
  */
 class ReferenceResolver extends BaseInstanceResolver {
     /**
