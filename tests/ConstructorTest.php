@@ -131,6 +131,14 @@ class ConstructorTestOptionalArg {
     }
 }
 
+class ConstructorTestRef {
+    public $inner;
+
+    public function __construct($inner) {
+        $this->inner = $inner;
+    }
+}
+
 /* -------------------------------------------------------------------------
  * Tests
  * ------------------------------------------------------------------------- */
@@ -289,6 +297,21 @@ class ConstructorTest extends TestCase {
         $container = new Container();
         $obj = $container->get(ConstructorTestOptionalArg::class);
         $this->assertEquals('something', $obj->a);
+    }
+
+    public function testRefClass() {
+        $container = new Container();
+        $container->set(ConstructorTestRef::class)->args(Container::ref(ConstructorTestOptionalArg::class));
+        $obj = $container->get(ConstructorTestRef::class);
+        $this->assertEquals('something', $obj->inner->a);
+    }
+
+    public function testRefNamedInstance() {
+        $container = new Container();
+        $container->set('@inner', ConstructorTestOptionalArg::class)->args('something else');
+        $container->set(ConstructorTestRef::class)->args(Container::ref('@inner'));
+        $obj = $container->get(ConstructorTestRef::class);
+        $this->assertEquals('something else', $obj->inner->a);
     }
 }
 ?>
