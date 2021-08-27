@@ -33,34 +33,27 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer;
+namespace LightContainer\Loader;
 
 use LightContainer\Resolvers\ResolverInterface;
-use Psr\Container\ContainerInterface;
 
 /**
- * The core LightContainer interface.
+ * An interface for a configuration loader.
  */
-interface LightContainerInterface extends ContainerInterface {
-    /**
-     * Gets the resolver associated with a particular identifier.
-     * 
-     * If a resolver cannot be found, it returns null
-     * 
-     * @param string $id the identifier
-     * @param bool $include_autowire whether to include resolvers automatically
-     * generated through autowiring
-     * @return ResolverInterface the resolver or null
-     */
-    public function getResolver(string $id, bool $include_autowire = true): ?ResolverInterface;
+interface LoaderInterface {
+    const NO_CONTEXT = 0;
+    const REFERENCE_CONTEXT = 1;
+    const LITERAL_CONTEXT = 2;
 
     /**
-     * Loads a container configuration from an array
+     * Creates a resolver from part of a configuration array.
      * 
-     * @param array $config the array to load
-     * @throw LightContainer\Loader\LoaderException if an error occurs
-     * in the load
+     * @param mixed $value the part of the configuration array to load
+     * @param int $context the parse context
+     * @return ResolverInterface the resolver
+     * @throws LoaderException if an error occurs
      */
-    public function load(array $config);
+    public function load($value, int $context = self::NO_CONTEXT): ResolverInterface;
 }
+
 ?>
