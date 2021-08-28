@@ -3,6 +3,7 @@
 LightContainer is a simple [PSR-11] compliant dependency injection container
 that supports autowiring.
 
+[![Latest Stable Version](https://poser.pugx.org/kelvinmo/lightcontainer/v/stable)](https://packagist.org/packages/kelvinmo/lightcontainer)
 [![build](https://github.com/kelvinmo/lightcontainer/workflows/CI/badge.svg)](https://github.com/kelvinmo/lightcontainer/actions?query=workflow%3ACI)
 
 ## Table of contents
