@@ -24,6 +24,7 @@ that supports autowiring.
   * [Multiple shared instances](#multiple-shared-instances)
   * [Custom instantiation](#custom-instantiation)
   * [Storing arbitrary values](#storing-arbitrary-values)
+  * [Loading configurations](#loading-configurations)
 * [Reference](#reference)
   * [Resolvers](#resolvers)
   * [Autowiring](#autowiring)
@@ -491,6 +492,30 @@ LightContainer\Container::value('example.com'));
 $container->set('@host', 'example.com');
 ```
 
+### Loading configurations
+
+Instead of configuring the container programmatically, you can also load a
+pre-defined configuration directly into the container using the `load` method.
+This method takes the container configuration as a plain PHP array, which you
+can populate using whichever method you want (e.g. loading from a JSON or
+YAML file).
+
+```php
+try {
+    $config = [
+        'FooInterface' => 'FooInterfaceImpl',
+        '@host' => [ '#value' => 'example.com' ]
+    ];
+    $container->load($config);
+} catch (LightContainer\Loader\LoaderException $e) {
+    
+}
+```
+
+See the [configuration format] documentation for details on how the
+configuration array should be strutured.  Note that only a subset of
+LightContainer's features are supported by this format.
+
 ## Reference
 
 ### Resolvers
@@ -608,3 +633,4 @@ BSD 3 clause
 
 [PSR-11]: https://www.php-fig.org/psr/psr-11/
 [entry identifier]: https://www.php-fig.org/psr/psr-11/#:~:text=1.1.1-,Entry%20identifiers,-An%20entry%20identifier
+[configuration format]: configuration_format.md
