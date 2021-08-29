@@ -205,7 +205,7 @@ class Container implements LightContainerInterface {
      * @param string $name the name to test
      * @return bool truw if the name is a valid type name
      */
-    protected static function isValidTypeName(string $name): bool {
+    public static function isValidTypeName(string $name): bool {
         return preg_match(self::CLASS_NAME_REGEX, $name);
     }
 
