@@ -55,7 +55,7 @@ interface LoadableInterface {
      * @throws LoaderException if an error occurs in parsing the
      * configuration array
      */
-    public static function createFromLoader($value, string $id = null, LoaderInterface $loader): ResolverInterface;
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface;
 }
 
 ?>

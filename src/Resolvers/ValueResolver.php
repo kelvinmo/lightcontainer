@@ -152,7 +152,7 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableIn
     /**
      * {@inheritdoc}
      */
-    public static function createFromLoader($value, string $id = null, LoaderInterface $loader): ResolverInterface {
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
         return self::create($value);
     }
     /**
