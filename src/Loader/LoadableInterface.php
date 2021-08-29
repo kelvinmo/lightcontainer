@@ -49,12 +49,13 @@ interface LoadableInterface {
      * The configuration array should be in a canonical format?
      * 
      * @param mixed $value the configuration array
+     * @param string $id the entry ID, if applicable
      * @param LoaderInterface $loader the loader
      * @return ResolverInterface the new resolver
      * @throws LoaderException if an error occurs in parsing the
      * configuration array
      */
-    public static function createFromLoader($value, LoaderInterface $loader): ResolverInterface;
+    public static function createFromLoader($value, string $id = null, LoaderInterface $loader): ResolverInterface;
 }
 
 ?>

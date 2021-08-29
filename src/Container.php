@@ -187,9 +187,9 @@ class Container implements LightContainerInterface {
         // before setting them.
         foreach ($config as $id => $value) {
             try {
-                $resolvers[$id] = $loader->load($value, LoaderInterface::REFERENCE_CONTEXT);
+                $resolvers[$id] = $loader->load($value, $id, LoaderInterface::REFERENCE_CONTEXT);
             } catch (LoaderException $e) {
-                throw new LoaderException('Cannot load ' . $id . ': ' . $e->getMessage(), 0, $e);
+                throw new LoaderException('Cannot load entry ' . $id . ': ' . $e->getMessage(), 0, $e);
             }
             
         }

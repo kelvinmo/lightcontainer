@@ -49,11 +49,12 @@ interface LoaderInterface {
      * Creates a resolver from part of a configuration array.
      * 
      * @param mixed $value the part of the configuration array to load
+     * @param string $id the entry ID, if applicable
      * @param int $context the parse context
      * @return ResolverInterface the resolver
      * @throws LoaderException if an error occurs
      */
-    public function load($value, int $context = self::NO_CONTEXT): ResolverInterface;
+    public function load($value, string $id = null, int $context = self::NO_CONTEXT): ResolverInterface;
 }
 
 ?>
