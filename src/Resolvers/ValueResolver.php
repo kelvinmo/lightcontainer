@@ -36,6 +36,8 @@
 namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
+use LightContainer\Loader\LoadableInterface;
+use LightContainer\Loader\LoaderInterface;
 
 /**
  * A resolver that resolves to a specified value.
@@ -45,7 +47,7 @@ use LightContainer\LightContainerInterface;
  * is also used by BaseInstanceResolver to store argument values that
  * can be passed on during constructor or setter injection.
  */
-class ValueResolver implements ResolverInterface, TypeCheckInterface {
+class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableInterface {
     private static $shared = [
         'null' => null,
         'true' => null,
@@ -147,6 +149,12 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface {
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromLoader($value, string $id = null, LoaderInterface $loader): ResolverInterface {
+        return self::create($value);
+    }
     /**
      * {@inheritdoc}
      */

@@ -36,6 +36,8 @@
 namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
+use LightContainer\Loader\LoadableInterface;
+use LightContainer\Loader\LoaderInterface;
 
 /**
  * A resolver that resolves to a the value of a global variable.
@@ -43,7 +45,7 @@ use LightContainer\LightContainerInterface;
  * This resolver is useful in non-PHP configuration files, where
  * you need to specify the value of a global variable.
  */
-class GlobalResolver implements ResolverInterface {
+class GlobalResolver implements ResolverInterface, LoadableInterface {
     protected $variable;
 
     /**
@@ -61,6 +63,13 @@ class GlobalResolver implements ResolverInterface {
      */
     public function resolve(LightContainerInterface $container) {
         return $GLOBALS[$this->variable];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromLoader($value, string $id = null, LoaderInterface $loader): ResolverInterface {
+        return new GlobalResolver($value);
     }
 }
 
