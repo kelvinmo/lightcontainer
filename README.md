@@ -513,7 +513,7 @@ try {
 ```
 
 See the [configuration format] documentation for details on how the
-configuration array should be strutured.  Note that only a subset of
+configuration array should be structured.  Note that only a subset of
 LightContainer's features are supported by this format.
 
 ## Reference
