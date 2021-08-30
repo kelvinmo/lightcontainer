@@ -363,12 +363,11 @@ This can be done by calling the `set` method with the name of the class or
 interface to be replaced in the first argument, and the name of the concrete
 class as the second argument.
 
-**TO BE CONFIRMED.**  Note that the class or interface does not actually
-need to exist.  LightContainer only checks whether the first argument only
-contains characters that can be used as the fully qualified name of a type
-(i.e. including the namespace), and if it does, it treats the
-entry as a global alias.  Otherwise it treats the entry as a
-[named instance](#multiple-shared-instances).
+Note that the class or interface does not actually need to exist.
+LightContainer only checks whether the first argument only contains characters
+that can be used as the fully qualified name of a type (i.e. including the
+namespace), and if it does, it treats the entry as a global alias.  Otherwise
+it treats the entry as a [named instance](#multiple-shared-instances).
 
 ```php
 $container->set(FooInterface::class, FooInterfaceImpl::class);

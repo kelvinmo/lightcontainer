@@ -97,9 +97,6 @@ class Container implements LightContainerInterface {
                 $value = ltrim($value, '\\');
                 $resolver = new ReferenceResolver($value);
 
-                // TODO Should we set this to a named instance if $id is not an
-                // existing class/interface?
-                // Or if it contains an invalid class/interface character?
                 if (!self::isValidTypeName($id)) {
                     $resolver->setNamedInstance();
                 }
