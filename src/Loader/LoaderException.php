@@ -33,44 +33,14 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer\Resolvers;
+namespace LightContainer\Loader;
 
-use LightContainer\LightContainerInterface;
-use LightContainer\Loader\LoadableInterface;
-use LightContainer\Loader\LoaderInterface;
+use LightContainer\ContainerException;
 
 /**
- * A resolver that resolves to a the value of a global variable.
- * 
- * This resolver is useful in non-PHP configuration files, where
- * you need to specify the value of a global variable.
+ * An exception thrown when an error occurred in loading.
  */
-class GlobalResolver implements ResolverInterface, LoadableInterface {
-    protected $variable;
-
-    /**
-     * Creates a GlobalResolver
-     * 
-     * @param string $variable the name of the global variable,
-     * without the preceding dollar sign
-     */
-    public function __construct(string $variable) {
-        $this->variable = $variable;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resolve(LightContainerInterface $container) {
-        return $GLOBALS[$this->variable];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
-        return new GlobalResolver($value);
-    }
+class LoaderException extends ContainerException {
 }
 
 ?>

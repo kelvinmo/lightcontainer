@@ -33,44 +33,28 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer\Resolvers;
+namespace LightContainer\Loader;
 
-use LightContainer\LightContainerInterface;
-use LightContainer\Loader\LoadableInterface;
-use LightContainer\Loader\LoaderInterface;
+use LightContainer\Resolvers\ResolverInterface;
 
 /**
- * A resolver that resolves to a the value of a global variable.
- * 
- * This resolver is useful in non-PHP configuration files, where
- * you need to specify the value of a global variable.
+ * An interface for a configuration loader.
  */
-class GlobalResolver implements ResolverInterface, LoadableInterface {
-    protected $variable;
+interface LoaderInterface {
+    const NO_CONTEXT = 0;
+    const REFERENCE_CONTEXT = 1;
+    const LITERAL_CONTEXT = 2;
 
     /**
-     * Creates a GlobalResolver
+     * Creates a resolver from part of a configuration array.
      * 
-     * @param string $variable the name of the global variable,
-     * without the preceding dollar sign
+     * @param mixed $value the part of the configuration array to load
+     * @param string $id the entry ID, if applicable
+     * @param int $context the parse context
+     * @return ResolverInterface the resolver
+     * @throws LoaderException if an error occurs
      */
-    public function __construct(string $variable) {
-        $this->variable = $variable;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function resolve(LightContainerInterface $container) {
-        return $GLOBALS[$this->variable];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
-        return new GlobalResolver($value);
-    }
+    public function load($value, string $id = null, int $context = self::NO_CONTEXT): ResolverInterface;
 }
 
 ?>

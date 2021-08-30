@@ -33,25 +33,29 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer\Resolvers;
+namespace LightContainer\Loader;
 
-use LightContainer\LightContainerInterface;
+use LightContainer\Resolvers\ResolverInterface;
 
 /**
- * A resolver that resolves to a defined constant.
- * 
- * This resolver is useful in non-PHP configuration files, where
- * you need to specify the value of a defined constant.
+ * An interface for classes that can create a resolver from a
+ * configuration array.
  */
-class ConstantResolver extends ValueResolver {
+interface LoadableInterface {
     /**
-     * Creates a ValueResolver with the specified value
+     * Creates a resolver from a configuration array, or a part
+     * of the configuration array.
      * 
-     * @param string $constant the name of the constant
+     * The configuration array should be in a canonical format?
+     * 
+     * @param mixed $value the configuration array
+     * @param string $id the entry ID, if applicable
+     * @param LoaderInterface $loader the loader
+     * @return ResolverInterface the new resolver
+     * @throws LoaderException if an error occurs in parsing the
+     * configuration array
      */
-    public function __construct(string $constant) {
-        parent::__construct(constant($constant));
-    }
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface;
 }
 
 ?>

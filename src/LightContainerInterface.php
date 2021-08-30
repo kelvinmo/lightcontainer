@@ -53,5 +53,14 @@ interface LightContainerInterface extends ContainerInterface {
      * @return ResolverInterface the resolver or null
      */
     public function getResolver(string $id, bool $include_autowire = true): ?ResolverInterface;
+
+    /**
+     * Loads a container configuration from an array
+     * 
+     * @param array $config the array to load
+     * @throw LightContainer\Loader\LoaderException if an error occurs
+     * in the load
+     */
+    public function load(array $config);
 }
 ?>

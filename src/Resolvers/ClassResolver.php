@@ -37,6 +37,8 @@ namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
 use LightContainer\ContainerException;
+use LightContainer\Loader\LoadableInterface;
+use LightContainer\Loader\LoaderInterface;
 
 /**
  * A resolver that resolves by creating an instance of a specified class.
@@ -45,7 +47,7 @@ use LightContainer\ContainerException;
  * 
  * Autowiring
  */
-class ClassResolver extends BaseInstanceResolver implements AutowireInterface, TypeCheckInterface {
+class ClassResolver extends BaseInstanceResolver implements AutowireInterface, TypeCheckInterface, LoadableInterface {
     /**
      * The name of the class to create
      * 
@@ -161,6 +163,30 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
     protected function setOptions(array $options) {
         parent::setOptions($options);
         $this->rebuildCache($options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
+        $resolver = new ClassResolver($id);
+
+        if (isset($value['shared'])) $resolver->shared($value['shared']);
+        if (isset($value['propagate'])) $resolver->propagate($value['propagate']);
+        if (isset($value['alias'])) $resolver->alias($value['alias']);
+        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
+            return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
+        }, $value['args']));
+
+        if (isset($value['call'])) {
+            foreach ($value['call'] as $args) {
+                $method = array_shift($args);
+                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
+                    return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
+                }, $args));
+            }
+        }
+        return $resolver;
     }
 
     /**

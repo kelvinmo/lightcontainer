@@ -37,6 +37,8 @@ namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
 use LightContainer\NotFoundException;
+use LightContainer\Loader\LoadableInterface;
+use LightContainer\Loader\LoaderInterface;
 
 /**
  * A resolver that resolves to an object by looking up another entry
@@ -49,7 +51,7 @@ use LightContainer\NotFoundException;
  * ClassResolver to resolve type-hinted parameters during constructor
  * or setter injection.
  */
-class ReferenceResolver extends BaseInstanceResolver {
+class ReferenceResolver extends BaseInstanceResolver implements LoadableInterface {
     /**
      * The entry identifier of the target
      * 
@@ -101,6 +103,33 @@ class ReferenceResolver extends BaseInstanceResolver {
      */
     public function propagate(bool $propagate = true) {
         throw new \InvalidArgumentException('Propagate cannot be set on a ReferenceResolver');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
+        $resolver = new ReferenceResolver($value['target']);
+
+        if (isset($value['named']) && ($value['named'] === true))
+            $resolver->setNamedInstance();
+
+        if (isset($value['shared'])) $resolver->shared($value['shared']);
+        if (isset($value['alias'])) $resolver->alias($value['alias']);
+        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
+            return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
+        }, $value['args']));
+
+        if (isset($value['call'])) {
+            foreach ($value['call'] as $args) {
+                $method = array_shift($args);
+                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
+                    return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
+                }, $args));
+            }
+        }
+
+        return $resolver;
     }
 
     /**

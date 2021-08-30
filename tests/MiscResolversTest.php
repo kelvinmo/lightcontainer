@@ -18,15 +18,6 @@ $global_var = 'global variable initial';
  * ------------------------------------------------------------------------- */
 
 class MiscResolversTest extends TestCase {
-    public function testConstantResolver() {
-        $container = new Container();
-        $resolver = new ConstantResolver('LightContainer\Tests\TEST_CONSTANT');
-
-        $container->set('@constant', $resolver);
-        $a = $container->get('@constant');
-        $this->assertEquals(TEST_CONSTANT, $a);
-    }
-
     public function testGlobalResolver() {
         global $global_var;
 

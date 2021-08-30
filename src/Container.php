@@ -42,6 +42,9 @@ use LightContainer\Resolvers\ClassResolver;
 use LightContainer\Resolvers\FactoryResolver;
 use LightContainer\Resolvers\ReferenceResolver;
 use LightContainer\Resolvers\ValueResolver;
+use LightContainer\Loader\Loader;
+use LightContainer\Loader\LoaderInterface;
+use LightContainer\Loader\LoaderException;
 
 /**
  * A lightweight, autowiring, PSR-11 compliant container
@@ -72,6 +75,7 @@ class Container implements LightContainerInterface {
     public function __construct() {
         $this->self_resolver = ValueResolver::create($this);
         $this->set(self::class, $this->self_resolver);
+        $this->set(LoaderInterface::class, Loader::class);
     }
     
     /**
@@ -170,6 +174,27 @@ class Container implements LightContainerInterface {
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function load(array $config) {
+        $loader = $this->get(LoaderInterface::class);
+        $resolvers = [];
+
+        // We want this to be an atomic operation, so we decode all the resolvers
+        // before setting them.
+        foreach ($config as $id => $value) {
+            try {
+                $resolvers[$id] = $loader->load($value, $id, LoaderInterface::REFERENCE_CONTEXT);
+            } catch (LoaderException $e) {
+                throw new LoaderException('Cannot load entry ' . $id . ': ' . $e->getMessage(), 0, $e);
+            }
+            
+        }
+
+        $this->resolvers = array_merge($this->resolvers, $resolvers);
+    }
+
+    /**
      * Determines whether or not a string resembles a valid type (class, interface
      * or trait name), regardless of whether the type
      * exists.
@@ -177,7 +202,7 @@ class Container implements LightContainerInterface {
      * @param string $name the name to test
      * @return bool truw if the name is a valid type name
      */
-    protected static function isValidTypeName(string $name): bool {
+    public static function isValidTypeName(string $name): bool {
         return preg_match(self::CLASS_NAME_REGEX, $name);
     }
 
