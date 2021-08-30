@@ -3,6 +3,7 @@
 LightContainer is a simple [PSR-11] compliant dependency injection container
 that supports autowiring.
 
+[![Latest Stable Version](https://poser.pugx.org/kelvinmo/lightcontainer/v/stable)](https://packagist.org/packages/kelvinmo/lightcontainer)
 [![build](https://github.com/kelvinmo/lightcontainer/workflows/CI/badge.svg)](https://github.com/kelvinmo/lightcontainer/actions?query=workflow%3ACI)
 
 ## Table of contents
@@ -363,12 +364,11 @@ This can be done by calling the `set` method with the name of the class or
 interface to be replaced in the first argument, and the name of the concrete
 class as the second argument.
 
-**TO BE CONFIRMED.**  Note that the class or interface does not actually
-need to exist.  LightContainer only checks whether the first argument only
-contains characters that can be used as the fully qualified name of a type
-(i.e. including the namespace), and if it does, it treats the
-entry as a global alias.  Otherwise it treats the entry as a
-[named instance](#multiple-shared-instances).
+Note that the class or interface does not actually need to exist.
+LightContainer only checks whether the first argument only contains characters
+that can be used as the fully qualified name of a type (i.e. including the
+namespace), and if it does, it treats the entry as a global alias.  Otherwise
+it treats the entry as a [named instance](#multiple-shared-instances).
 
 ```php
 $container->set(FooInterface::class, FooInterfaceImpl::class);
