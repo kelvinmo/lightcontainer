@@ -71,8 +71,20 @@ class Loader implements LoaderInterface {
         $args = [];
 
         if (is_array($value)) {
-            // If $value is an array, it can be one of the following
-            // 
+            /* If $value is an array, depending the presence of various
+             * reserved keys, it can be one of the following
+             * 
+             * - _type: a canonical form resolver declaration
+             * - _ref: a reference resolver
+             * - _value: a value resolver
+             * - _const: a value resolver for a PHP constant
+             * - _global: a resolver for a PHP global variable
+             * 
+             * Otherwise, if it is a sequential array (i.e. with sequential numeric)
+             * keys, then treat it as a value resolver with an array literal.
+             * 
+             * Otherwise treat it as a class resolver.
+             */
 
             if (isset($value[self::TYPE])) {
                 // _type
@@ -109,6 +121,10 @@ class Loader implements LoaderInterface {
                 $args = (empty($value)) ? null : $value;
             }
         } elseif (is_string($value)) {
+            /*
+             * If $value is a string, then it can be a reference to a value,
+             * or a literal string, depending on the specified context.
+             */
             switch ($context) {
                 case self::REFERENCE_CONTEXT:
                     $resolver_class_name = ReferenceResolver::class;
@@ -130,7 +146,6 @@ class Loader implements LoaderInterface {
         if (!is_a($resolver_class_name, LoadableInterface::class, true))
             throw new LoaderException('Resolver does not implement LoadableInterface: ' . $resolver_class_name);
 
-        // TODO named instance
         if (($id != null) && (is_a($resolver_class_name, ReferenceResolver::class, true)) && !Container::isValidTypeName($id)) {
             $args['named'] = true;
         }
