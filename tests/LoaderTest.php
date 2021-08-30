@@ -13,7 +13,7 @@ $loader_test_global = 'This is a global variable';
 
 const LOADER_TEST_CONST = 'This is a constant';
 
-class LoaderTestBasicClass {}
+class LoaderTestBasicClass implements LoaderTestInterface {}
 
 class LoaderTestClassWithOptions {}
 
@@ -25,6 +25,14 @@ class LoaderTestConstructorArgs {
     public $inner;
 
     public function __construct($inner) {
+        $this->inner = $inner;
+    }
+}
+
+class LoaderTestSetterArgs {
+    public $inner = null;
+
+    public function setInner(LoaderTestInterface $inner) {
         $this->inner = $inner;
     }
 }
@@ -44,6 +52,14 @@ class LoaderTest extends TestCase {
             'LightContainer\\Tests\\LoaderTestBasicClass' => [],
             'LightContainer\\Tests\\LoaderTestClassWithOptions' => [
                 'shared' => true
+            ],
+            'LightContainer\\Tests\\LoaderTestConstructorArgs' => [
+                'args' => [ 8080 ]
+            ],
+            'LightContainer\\Tests\\LoaderTestSetterArgs' => [
+                'call' => [ 
+                    [ 'setInner' ]
+                 ]
             ],
 
             // Global aliases
@@ -98,6 +114,12 @@ class LoaderTest extends TestCase {
         $i1 = $container->get('LightContainer\\Tests\\LoaderTestInterfaceWithOptions');
         $i2 = $container->get('LightContainer\\Tests\\LoaderTestInterfaceWithOptions');
         $this->assertSame($i1, $i2);
+
+        $ca = $container->get('LightContainer\\Tests\\LoaderTestConstructorArgs');
+        $this->assertEquals(8080, $ca->inner);
+
+        $sa = $container->get('LightContainer\\Tests\\LoaderTestSetterArgs');
+        $this->assertInstanceOf('LightContainer\\Tests\\LoaderTestBasicClass', $sa->inner);
 
         $n1 = $container->get('@named_instance_1');
         $this->assertEquals(1, $n1->inner);
