@@ -43,9 +43,19 @@ use LightContainer\Loader\LoaderInterface;
 /**
  * A resolver that resolves by creating an instance of a specified class.
  * 
- * This is the key
+ * This is the key resolver for LightContainer.  It determines, by
+ * reflection, the parameters of the constructor need to create instances,
+ * and then resolves those parameters via instantiation options or
+ * by calling the container to retrieve instances of other classes.  A
+ * similar process occurs if the instantiation options provide for
+ * setter injection.
  * 
- * Autowiring
+ * This class inherits from {@link BaseInstanceResolver}, and therefore
+ * instantiation options can be set for this resolver.
+ * 
+ * Instances of this class are automatically created by the container
+ * via *autowiring* if a resolver not already exist for a particular
+ * class.
  */
 class ClassResolver extends BaseInstanceResolver implements AutowireInterface, TypeCheckInterface, LoadableInterface {
     /**

@@ -39,7 +39,11 @@ use LightContainer\Resolvers\ResolverInterface;
 use Psr\Container\ContainerInterface;
 
 /**
- * The core LightContainer interface.
+ * The core LightContainer interface implemented by {@link Container}.
+ * 
+ * This interface is a subinterface of {@link Psr\Container\ContainerInterface},
+ * meaning all implementations of this interface will be PSR-11
+ * compliant.
  */
 interface LightContainerInterface extends ContainerInterface {
     /**

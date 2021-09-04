@@ -285,7 +285,7 @@ class BaseInstanceResolver implements ResolverInterface {
     }
 
     /**
-     * Remove the shared object from clone.
+     * Remove the shared object from any clone of the resolver.
      */
     public function __clone() {
         $this->shared = null;

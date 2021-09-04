@@ -48,6 +48,8 @@ use LightContainer\Loader\LoaderException;
 
 /**
  * A lightweight, autowiring, PSR-11 compliant container
+ * 
+ * @link https://github.com/kelvinmo/lightcontainer
  */
 class Container implements LightContainerInterface {
     /**
