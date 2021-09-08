@@ -6,7 +6,7 @@
         "psr/container-implementation": "1.0"
     },
     "require": {
-        "psr/container": "^2.0",
+        "psr/container": "^1.1 || ^2.0",
         "php": "^7.2 || ^8.0"
     },
     "require-dev": {
