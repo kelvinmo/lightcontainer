@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Fix error when loading options for autowired resolvers
+
 ## 0.1.1
 
 ### Changed

@@ -37,6 +37,8 @@ namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
 use LightContainer\NotFoundException;
+use LightContainer\Loader\LoadableInterface;
+use LightContainer\Loader\LoaderInterface;
 
 /**
  * A base class for resolvers that can resolve to an instance
@@ -58,7 +60,7 @@ use LightContainer\NotFoundException;
  * - {@link ReferenceResolver} - a resolver that looks up another
  *   entry in the container
  */
-class BaseInstanceResolver implements ResolverInterface {
+class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
     /**
      * An array of instantiation options
      * 
@@ -275,6 +277,30 @@ class BaseInstanceResolver implements ResolverInterface {
      */
     protected function getSharedObject() {
         return $this->shared;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
+        $resolver = new BaseInstanceResolver();
+
+        if (isset($value['shared'])) $resolver->shared($value['shared']);
+        if (isset($value['propagate'])) $resolver->propagate($value['propagate']);
+        if (isset($value['alias'])) $resolver->alias($value['alias']);
+        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
+            return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
+        }, $value['args']));
+
+        if (isset($value['call'])) {
+            foreach ($value['call'] as $args) {
+                $method = array_shift($args);
+                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
+                    return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
+                }, $args));
+            }
+        }
+        return $resolver;
     }
 
     /**

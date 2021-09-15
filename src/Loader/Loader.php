@@ -37,6 +37,7 @@ namespace LightContainer\Loader;
 
 use LightContainer\Container;
 use LightContainer\Resolvers\ResolverInterface;
+use LightContainer\Resolvers\BaseInstanceResolver;
 use LightContainer\Resolvers\ConstantResolver;
 use LightContainer\Resolvers\GlobalResolver;
 use LightContainer\Resolvers\ClassResolver;
@@ -83,7 +84,7 @@ class Loader implements LoaderInterface {
              * Otherwise, if it is a sequential array (i.e. with sequential numeric)
              * keys, then treat it as a value resolver with an array literal.
              * 
-             * Otherwise treat it as a class resolver.
+             * Otherwise treat it as a wildcard or class resolver.
              */
 
             if (isset($value[self::TYPE])) {
@@ -117,7 +118,7 @@ class Loader implements LoaderInterface {
                 $args = $value;
             } elseif ($context == self::REFERENCE_CONTEXT) {
                 // Assume class resolver
-                $resolver_class_name = ClassResolver::class;
+                $resolver_class_name = (!is_null($id) && ($id == '*')) ? BaseInstanceResolver::class : ClassResolver::class;
                 $args = (empty($value)) ? null : $value;
             }
         } elseif (is_string($value)) {

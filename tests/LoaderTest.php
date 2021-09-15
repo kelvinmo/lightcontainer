@@ -42,8 +42,6 @@ class LoaderTestSetterArgs {
  * ------------------------------------------------------------------------- */
 
 class LoaderTest extends TestCase {
-
-
     public function testLoad() {
         global $loader_test_global;
 
@@ -140,6 +138,19 @@ class LoaderTest extends TestCase {
 
         $this->assertEquals(LOADER_TEST_CONST, $container->get('@const_value'));
         $this->assertEquals($loader_test_global, $container->get('@global_value'));
+    }
+
+    public function testWildcard() {
+        $config = [
+            '*' => [ 'shared' => true ]
+        ];
+
+        $container = new Container();
+        $container->load($config);
+
+        $o1 = $container->get('LightContainer\\Tests\\LoaderTestClassWithOptions');
+        $o2 = $container->get('LightContainer\\Tests\\LoaderTestClassWithOptions');
+        $this->assertSame($o1, $o2);
     }
 }
 ?>
