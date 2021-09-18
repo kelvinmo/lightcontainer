@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-### Fixed
+### 0.1.2
 
 - Fix error when loading options for autowired resolvers
 
@@ -10,7 +10,7 @@
 
 ### Changed
 
-- Update `composer.json` to support `psr/container` `^1.1^
+- Update `composer.json` to support `psr/container` `^1.1^`
 
 ## 0.1.0
 
