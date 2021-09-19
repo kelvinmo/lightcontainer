@@ -81,12 +81,7 @@ class Container implements LightContainerInterface {
     }
     
     /**
-     * Configures a resolver against an identifier
-     * 
-     * @param string $id the identifier
-     * @param mixed $value the value
-     * @return ResolverInterface the resolver
-     * @throws InvalidArgumentException
+     * {@inheritdoc}
      */
     public function set(string $id, $value = null): ResolverInterface {
         $id = ltrim($id, '\\');

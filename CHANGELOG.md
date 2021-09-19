@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-### 0.1.2
+### Added
+
+- Add the `set` method to `LightContainerInterface`
+
+## 0.1.2
+
+### Fixed
 
 - Fix error when loading options for autowired resolvers
 

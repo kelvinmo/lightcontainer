@@ -47,14 +47,34 @@ use Psr\Container\ContainerInterface;
  */
 interface LightContainerInterface extends ContainerInterface {
     /**
-     * Gets the resolver associated with a particular identifier.
+     * Configures and registers a resolver for a specified identifier.
+     * 
+     * This method takes the string entry identifier and the specified value,
+     * then creates and registers a resolver, and returns the resolver.
+     * 
+     * The kind of resolver the method creates depends on the format of the
+     * entry identifier, and the type of value that is specified. These
+     * are detailed in the documentation under the *See* section.
+     * 
+     * @param string $id the entry identifier
+     * @param mixed $value the configuration
+     * @return ResolverInterface the resolver
+     * @throws InvalidArgumentException if the specified configuration
+     * is invalid
+     * @see https://github.com/kelvinmo/lightcontainer/blob/master/README.md
+     */
+    public function set(string $id, $value = null): ResolverInterface;
+
+    /**
+     * Returns the resolver associated with a particular entry identifier.
      * 
      * If a resolver cannot be found, it returns null
      * 
-     * @param string $id the identifier
+     * @param string $id the entry identifier
      * @param bool $include_autowire whether to include resolvers automatically
      * generated through autowiring
-     * @return ResolverInterface the resolver or null
+     * @return ResolverInterface the resolver or null if the resolver cannot
+     * be found
      */
     public function getResolver(string $id, bool $include_autowire = true): ?ResolverInterface;
 
@@ -62,7 +82,7 @@ interface LightContainerInterface extends ContainerInterface {
      * Loads a container configuration from an array
      * 
      * @param array $config the array to load
-     * @throw LightContainer\Loader\LoaderException if an error occurs
+     * @throws LightContainer\Loader\LoaderException if an error occurs
      * in the load
      */
     public function load(array $config);
