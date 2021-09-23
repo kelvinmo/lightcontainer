@@ -53,13 +53,12 @@ use LightContainer\Resolvers\ValueResolver;
  * configuration file.
  */
 class Loader implements LoaderInterface {
-    // Canonical encoding
+    // Canonical format
     const TYPE = '_type';
     const ARGS = '_args';
 
+    // Compact format
     const REF = '_ref';
-
-    // Compact encoding
     const LITERAL_VALUE = '_value';
     const CONSTANT = '_const';
     const GLOBAL_VARIABLE = '_global';
