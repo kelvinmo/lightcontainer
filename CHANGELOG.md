@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+## Added
+
+- Add `populate` method to register services
+
 ## 0.1.3
 
 ### Fixed
