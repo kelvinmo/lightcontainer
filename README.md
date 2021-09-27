@@ -633,4 +633,4 @@ BSD 3 clause
 
 [PSR-11]: https://www.php-fig.org/psr/psr-11/
 [entry identifier]: https://www.php-fig.org/psr/psr-11/#:~:text=1.1.1-,Entry%20identifiers,-An%20entry%20identifier
-[configuration format]: configuration_format.md
+[configuration format]: docs/configuration_format.md
