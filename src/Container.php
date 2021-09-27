@@ -114,6 +114,9 @@ class Container implements LightContainerInterface {
         return $resolver;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function populate(string $class_name, array $exclude = []): ResolverInterface {
         $resolver = new ClassResolver($class_name);
 
