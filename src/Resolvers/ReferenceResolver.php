@@ -114,22 +114,8 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
         if (isset($value['named']) && ($value['named'] === true))
             $resolver->setNamedInstance();
 
-        if (isset($value['shared'])) $resolver->shared($value['shared']);
-        if (isset($value['alias'])) $resolver->alias($value['alias']);
-        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
-            return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
-        }, $value['args']));
-
-        if (isset($value['call'])) {
-            foreach ($value['call'] as $args) {
-                $method = array_shift($args);
-                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
-                    return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
-                }, $args));
-            }
-        }
-
-        return $resolver;
+        // Remove 'propagate' from the configuration array before passing onto load
+        return $resolver->load($value, $id, $loader);
     }
 
     /**

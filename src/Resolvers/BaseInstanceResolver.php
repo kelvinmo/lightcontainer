@@ -280,27 +280,40 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
     }
 
     /**
-     * {@inheritdoc}
+     * Loads instantiation options from a configuration array.
+     * 
+     * @param mixed $value the part of the configuration array to load
+     * @param string $id the entry ID, if applicable
+     * @param int $context the parse context
+     * @return ResolverInterface the resolver
+     * @throws LoaderException if an error occurs
      */
-    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
-        $resolver = new BaseInstanceResolver();
-
-        if (isset($value['shared'])) $resolver->shared($value['shared']);
-        if (isset($value['propagate'])) $resolver->propagate($value['propagate']);
-        if (isset($value['alias'])) $resolver->alias($value['alias']);
-        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
+    protected function load($value, ?string $id, LoaderInterface $loader): ResolverInterface {
+        if (isset($value['shared'])) $this->shared($value['shared']);
+        if (isset($value['propagate'])) $this->propagate($value['propagate']);
+        if (isset($value['alias'])) $this->alias($value['alias']);
+        if (isset($value['args'])) $this->args(...array_map(function ($arg) use ($loader) {
             return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
         }, $value['args']));
 
         if (isset($value['call'])) {
             foreach ($value['call'] as $args) {
                 $method = array_shift($args);
-                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
+                $this->call($method, ...array_map(function ($arg) use ($loader) {
                     return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
                 }, $args));
             }
         }
-        return $resolver;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
+        $resolver = new BaseInstanceResolver();
+        return $resolver->load($value, $id, $loader);
     }
 
     /**

@@ -180,23 +180,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      */
     public static function createFromLoader($value, ?string $id, LoaderInterface $loader): ResolverInterface {
         $resolver = new ClassResolver($id);
-
-        if (isset($value['shared'])) $resolver->shared($value['shared']);
-        if (isset($value['propagate'])) $resolver->propagate($value['propagate']);
-        if (isset($value['alias'])) $resolver->alias($value['alias']);
-        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
-            return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
-        }, $value['args']));
-
-        if (isset($value['call'])) {
-            foreach ($value['call'] as $args) {
-                $method = array_shift($args);
-                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
-                    return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
-                }, $args));
-            }
-        }
-        return $resolver;
+        return $resolver->load($value, $id, $loader);
     }
 
     /**
