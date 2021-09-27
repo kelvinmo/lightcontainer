@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fix error when loading with array constructor arguments
+
 ### Added
 
 - Add the `set` method to `LightContainerInterface`

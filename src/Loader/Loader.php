@@ -119,6 +119,10 @@ class Loader implements LoaderInterface {
                 // Assume class resolver
                 $resolver_class_name = (!is_null($id) && ($id == '*')) ? BaseInstanceResolver::class : ClassResolver::class;
                 $args = (empty($value)) ? null : $value;
+            } elseif ($context == self::LITERAL_CONTEXT) {
+                // Assume value resolver
+                $resolver_class_name = ValueResolver::class;
+                $args = $value;
             }
         } elseif (is_string($value)) {
             /*
