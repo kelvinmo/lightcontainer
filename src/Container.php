@@ -114,7 +114,7 @@ class Container implements LightContainerInterface {
         return $resolver;
     }
 
-    public function populate(string $class_name, array $exclude = []): ResolverInterace {
+    public function populate(string $class_name, array $exclude = []): ResolverInterface {
         $resolver = new ClassResolver($class_name);
 
         $refl = new \ReflectionClass($class_name);
