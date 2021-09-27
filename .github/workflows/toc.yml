@@ -6,6 +6,7 @@ on:
     # Note asterisks are special characters and must be quoted
     paths:
       - README.md
+      - 'docs/*.md'
 
 jobs:
   build:
@@ -15,7 +16,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: |
           npx markdown-toc -i README.md --bullets "*"
-          npx markdown-toc -i configuration_format.md --bullets "*"
+          npx markdown-toc -i docs/configuration_format.md --bullets "*"
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Auto update markdown TOC
