@@ -115,6 +115,8 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
             $resolver->setNamedInstance();
 
         // Remove 'propagate' from the configuration array before passing onto load
+        if (isset($value['propagate'])) unset($value['propagate']);
+
         return $resolver->load($value, $id, $loader);
     }
 
