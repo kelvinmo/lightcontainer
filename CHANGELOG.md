@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Updated code and documentation to enable better static analysis. The library
+  now passes phpstan level 6
+- `AutowireInterface` now extends from `ResolverInterface`
+
+### Fixed
+
+- Treatment of bool values in `ValueResolver`
+
 ## 0.1.3
 
 ### Fixed
