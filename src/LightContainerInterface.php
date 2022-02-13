@@ -59,7 +59,7 @@ interface LightContainerInterface extends ContainerInterface {
      * @param string $id the entry identifier
      * @param mixed $value the configuration
      * @return ResolverInterface the resolver
-     * @throws InvalidArgumentException if the specified configuration
+     * @throws \InvalidArgumentException if the specified configuration
      * is invalid
      * @see https://github.com/kelvinmo/lightcontainer/blob/master/README.md
      */
@@ -82,7 +82,7 @@ interface LightContainerInterface extends ContainerInterface {
      * Loads a container configuration from an array
      * 
      * @param array $config the array to load
-     * @throws LightContainer\Loader\LoaderException if an error occurs
+     * @throws \LightContainer\Loader\LoaderException if an error occurs
      * in the load
      */
     public function load(array $config);

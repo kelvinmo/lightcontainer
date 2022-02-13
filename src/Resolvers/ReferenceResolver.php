@@ -149,7 +149,7 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
      * Gets the resolver for the target, traversing through ReferenceResolvers
      * where required.
      * 
-     * @param LightContainerInterface the container
+     * @param LightContainerInterface $container the container
      * @return ResolverInterface the traversed resolver
      */
     protected function getTargetResolver(LightContainerInterface $container): ?ResolverInterface {

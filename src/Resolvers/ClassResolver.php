@@ -240,6 +240,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
 
         $options = [];
         foreach ($this->cache['tree'] as $parent) {
+            /** @var BaseInstanceResolver|null $parent_resolver */
             $parent_resolver = $container->getResolver($parent, false);
             if (($parent_resolver != null) && $parent_resolver->options['propagate']) {
                 $options = $parent_resolver->options;
@@ -256,7 +257,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
     /**
      * Builds an array of parameter properties for a specified method
      * 
-     * @param ReflectionMethod $method the reflection object on the specified
+     * @param \ReflectionMethod $method the reflection object on the specified
      * method
      * @return array an array of key properties of each parameter
      */

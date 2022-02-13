@@ -149,9 +149,9 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * For passing values to constructor arguments that do not have
      * type hints, use the {@link args()} method.
      * 
-     * @param $args the aliases
+     * @param string|array<string, string> $args the aliases
      * @return BaseInstanceResolver
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function alias(...$args) {
         if (count($args) == 2) {
@@ -190,7 +190,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * instance) in the container, use {@link LightContainer\Container::ref()}
      * to create a ReferenceResolver.
      * 
-     * @param $args values to be passed onto the constructor
+     * @param mixed $args values to be passed onto the constructor
      * @return BaseInstanceResolver
      */
     public function args(...$args) {
@@ -225,7 +225,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * Builds resolvers from arguments of {@link ::args()} and
      * {@link ::call()}.
      * 
-     * @param array the arguments
+     * @param array $args the arguments
      * @return array an array of resolvers
      */
     protected function buildResolversFromArgs(array $args) {
@@ -284,9 +284,9 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * 
      * @param mixed $value the part of the configuration array to load
      * @param string $id the entry ID, if applicable
-     * @param int $context the parse context
+     * @param LoaderInterface $loader the configuration loader
      * @return ResolverInterface the resolver
-     * @throws LoaderException if an error occurs
+     * @throws \LightContainer\Loader\LoaderException if an error occurs
      */
     protected function load($value, ?string $id, LoaderInterface $loader): ResolverInterface {
         if (isset($value['shared'])) $this->shared($value['shared']);
