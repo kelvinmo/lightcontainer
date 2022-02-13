@@ -48,7 +48,7 @@ namespace LightContainer\Resolvers;
  * {@link LightContainer\LightContainerInterface::getResolver()}
  * function.
  */
-interface AutowireInterface {
+interface AutowireInterface extends ResolverInterface {
     /**
      * Returns whether this resolver was created by autowiring
      * 
