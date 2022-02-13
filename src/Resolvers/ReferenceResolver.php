@@ -79,10 +79,14 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
 
     /**
      * Flags that this resolver relates to a named instance.
+     * 
+     * @return ReferenceResolver
      */
     public function setNamedInstance() {
         $this->named = true;
-        return $this->shared();
+        /** @var ReferenceResolver */
+        $self = $this->shared();
+        return $self;
     }
 
     /**
@@ -149,7 +153,7 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
      * Gets the resolver for the target, traversing through ReferenceResolvers
      * where required.
      * 
-     * @param LightContainerInterface the container
+     * @param LightContainerInterface $container the container
      * @return ResolverInterface the traversed resolver
      */
     protected function getTargetResolver(LightContainerInterface $container): ?ResolverInterface {

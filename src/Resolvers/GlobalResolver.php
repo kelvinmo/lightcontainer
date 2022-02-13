@@ -46,6 +46,11 @@ use LightContainer\Loader\LoaderInterface;
  * you need to specify the value of a global variable.
  */
 class GlobalResolver implements ResolverInterface, LoadableInterface {
+    /**
+     * The name of the global variable that this resolver resolves to.
+     * 
+     * @var string 
+     */
     protected $variable;
 
     /**

@@ -55,7 +55,7 @@ interface ResolverInterface {
      * 
      * @param LightContainerInterface $container the LightContainer instance
      * @return mixed the resolved object or value
-     * @throws NotFoundException if the resolver cannot instantiate the
+     * @throws \LightContainer\NotFoundException if the resolver cannot instantiate the
      * object
      */
     public function resolve(LightContainerInterface $container);

@@ -72,6 +72,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      */
     protected $autowired = false;
 
+    /** @var array<string, mixed> */
     protected $cache = [
         'tree' => [],
         'interfaces' => [],
@@ -186,7 +187,8 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
     /**
      * Flush and rebuild cache based on new instantiation options
      * 
-     * @param array $options the new instantiation options
+     * @param array<string, mixed> $options the new instantiation options
+     * @return void
      */
     protected function rebuildCache(array $options) {
         if (isset($options['alias'])) {
@@ -233,13 +235,14 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      * 
      * @param LightContainerInterface $container the container providing
      * the parent resolvers
-     * @return array the resolved instantiation options array
+     * @return array<string, mixed> the resolved instantiation options array
      */
     protected function resolveAutowiredOptions(LightContainerInterface $container): array {
         if (!$this->isAutowired()) return $this->options;
 
         $options = [];
         foreach ($this->cache['tree'] as $parent) {
+            /** @var BaseInstanceResolver|null $parent_resolver */
             $parent_resolver = $container->getResolver($parent, false);
             if (($parent_resolver != null) && $parent_resolver->options['propagate']) {
                 $options = $parent_resolver->options;
@@ -256,9 +259,9 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
     /**
      * Builds an array of parameter properties for a specified method
      * 
-     * @param ReflectionMethod $method the reflection object on the specified
+     * @param \ReflectionMethod $method the reflection object on the specified
      * method
-     * @return array an array of key properties of each parameter
+     * @return array<array<string, mixed>> an array of key properties of each parameter
      */
     protected function buildMethodParamsCache(\ReflectionMethod $method): array {
         $results = [];
@@ -302,8 +305,8 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      * 
      * @param string $method the method to call, or `__construct` for the
      * constructor
-     * @param array $options the instantiation options
-     * @return array an array of resolvers
+     * @param array<string, mixed> $options the instantiation options
+     * @return array<ResolverInterface> an array of resolvers
      */
     protected function buildMethodResolvers(string $method, array $options): array {
         $resolvers = [];
