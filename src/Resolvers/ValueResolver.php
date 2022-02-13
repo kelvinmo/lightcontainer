@@ -48,6 +48,7 @@ use LightContainer\Loader\LoaderInterface;
  * can be passed on during constructor or setter injection.
  */
 class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableInterface {
+    /** @var array<string, ?ValueResolver> */
     private static $shared = [
         'null' => null,
         'true' => null,
@@ -79,17 +80,20 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableIn
     public static function create($value): ValueResolver {
         if ($value == null) {
             return self::nullResolver();
-        } elseif ($value === true) {
-            return self::getSharedResolver('true', true);
-        } elseif ($value === false) {
-            return self::getSharedResolver('false', false);
+        } elseif (is_bool($value)) {
+            if ($value == true) {
+                return self::getSharedResolver('true', true);
+            } else {
+                return self::getSharedResolver('false', false);
+            }
         } else {
             return new ValueResolver($value);
         }
     }
 
     /**
-     * 
+     * @param string $key
+     * @param mixed $value
      */
     protected static function getSharedResolver(string $key, $value): ValueResolver {
         if (self::$shared[$key] == null) {
@@ -119,31 +123,22 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableIn
             case '*';
             case 'mixed':
                 return true;
-                break;
             case 'array':
                 return is_array($this->value);
-                break;
             case 'bool':
                 return is_bool($this->value);
-                break;
             case 'callable':
                 return is_callable($this->value);
-                break;
             case 'float':
                 return is_float($this->value);
-                break;
             case 'int':
                 return is_int($this->value);
-                break;
             case 'iterable':
                 return is_iterable($this->value);
-                break;
             case 'resource':
                 return is_resource($this->value);
-                break;
             case 'string':
                 return is_string($this->value);
-                break;
             default:
                 return is_a($this->value, $expected_type);
         }

@@ -79,10 +79,14 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
 
     /**
      * Flags that this resolver relates to a named instance.
+     * 
+     * @return ReferenceResolver
      */
     public function setNamedInstance() {
         $this->named = true;
-        return $this->shared();
+        /** @var ReferenceResolver */
+        $self = $this->shared();
+        return $self;
     }
 
     /**
@@ -114,22 +118,10 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
         if (isset($value['named']) && ($value['named'] === true))
             $resolver->setNamedInstance();
 
-        if (isset($value['shared'])) $resolver->shared($value['shared']);
-        if (isset($value['alias'])) $resolver->alias($value['alias']);
-        if (isset($value['args'])) $resolver->args(...array_map(function ($arg) use ($loader) {
-            return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
-        }, $value['args']));
+        // Remove 'propagate' from the configuration array before passing onto load
+        if (isset($value['propagate'])) unset($value['propagate']);
 
-        if (isset($value['call'])) {
-            foreach ($value['call'] as $args) {
-                $method = array_shift($args);
-                $resolver->call($method, ...array_map(function ($arg) use ($loader) {
-                    return $loader->load($arg, null, LoaderInterface::LITERAL_CONTEXT);
-                }, $args));
-            }
-        }
-
-        return $resolver;
+        return $resolver->load($value, $id, $loader);
     }
 
     /**
@@ -161,7 +153,7 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
      * Gets the resolver for the target, traversing through ReferenceResolvers
      * where required.
      * 
-     * @param LightContainerInterface the container
+     * @param LightContainerInterface $container the container
      * @return ResolverInterface the traversed resolver
      */
     protected function getTargetResolver(LightContainerInterface $container): ?ResolverInterface {
