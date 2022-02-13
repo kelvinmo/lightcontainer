@@ -85,7 +85,7 @@ interface LightContainerInterface extends ContainerInterface {
      * This resolver is returned by the method for further configuration.
      * 
      * @param string $class_name the name of the class to find interfaces
-     * @param array $exclude an array of interface names to exclude from
+     * @param array<string> $exclude an array of interface names to exclude from
      * registration
      * @return ResolverInterface the resolver
      */
