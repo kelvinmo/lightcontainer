@@ -48,6 +48,7 @@ use LightContainer\Loader\LoaderInterface;
  * can be passed on during constructor or setter injection.
  */
 class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableInterface {
+    /** @var array<string, ?ValueResolver> */
     private static $shared = [
         'null' => null,
         'true' => null,
@@ -91,7 +92,8 @@ class ValueResolver implements ResolverInterface, TypeCheckInterface, LoadableIn
     }
 
     /**
-     * 
+     * @param string $key
+     * @param mixed $value
      */
     protected static function getSharedResolver(string $key, $value): ValueResolver {
         if (self::$shared[$key] == null) {

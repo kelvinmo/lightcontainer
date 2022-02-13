@@ -64,7 +64,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
     /**
      * An array of instantiation options
      * 
-     * @var array
+     * @var array<string, mixed>
      */
     protected $options = [
         'shared' => false,
@@ -84,7 +84,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
     /**
      * Creates a BaseInstanceResolver
      * 
-     * @param array $options instantiation options
+     * @param array<string, mixed>|null $options instantiation options
      */
     public function __construct(array $options = null) {
         if ($options != null) {
@@ -209,7 +209,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * other arguments are specified in the arguments to this method.
      * 
      * @param string $method the name of the method to call
-     * @param array $args the arguments
+     * @param array<mixed> $args the arguments
      * @return BaseInstanceResolver
      */
     public function call(string $method, ...$args) {
@@ -225,8 +225,8 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * Builds resolvers from arguments of {@link ::args()} and
      * {@link ::call()}.
      * 
-     * @param array $args the arguments
-     * @return array an array of resolvers
+     * @param array<mixed> $args the arguments
+     * @return array<ResolverInterface> an array of resolvers
      */
     protected function buildResolversFromArgs(array $args) {
         $resolvers = [];
@@ -245,7 +245,8 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
     /**
      * Sets the instantiation options.
      * 
-     * @param array $options the instantiation options
+     * @param array<string, mixed> $options the instantiation options
+     * @return void
      */
     protected function setOptions(array $options) {
         $this->options = array_merge($this->options, $options);
@@ -265,6 +266,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * Saves an object as a shared object for this container.
      * 
      * @param mixed $object the object to save
+     * @return void
      */
     protected function saveSharedObject($object) {
         $this->shared = $object;

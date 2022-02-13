@@ -63,7 +63,7 @@ class Container implements LightContainerInterface {
     /**
      * An array of resolvers
      * 
-     * @var array
+     * @var array<string, ResolverInterface>
      */
     protected $resolvers = [];
 
@@ -118,10 +118,11 @@ class Container implements LightContainerInterface {
      * Remove a resolver from a container
      * 
      * @param string $id the identifier
+     * @return void
      */
     public function unset(string $id) {
         if (isset($this->resolvers[$id])) {
-            if ($this->resolvers[$id]->isAutowired()) return;
+            if (($this->resolvers[$id] instanceof AutowireInterface) && ($this->resolvers[$id]->isAutowired())) return;
             unset($this->resolvers[$id]);
         }
     }
