@@ -25,6 +25,7 @@ that supports autowiring.
   * [Multiple shared instances](#multiple-shared-instances)
   * [Custom instantiation](#custom-instantiation)
   * [Storing arbitrary values](#storing-arbitrary-values)
+  * [Configuring services](#configuring-services)
   * [Loading configurations](#loading-configurations)
 * [Reference](#reference)
   * [Resolvers](#resolvers)
