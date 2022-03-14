@@ -492,6 +492,33 @@ LightContainer\Container::value('example.com'));
 $container->set('@host', 'example.com');
 ```
 
+### Configuring services
+
+In certain situations, concrete classes are used to implement services,
+which are defined using interfaces.  Containers are then used to link the
+services to their implementations.
+
+```php
+interface FooService {}
+interface BarService {}
+
+class Baz implements FooService, BarService {}
+```
+
+Instead of calling the `set` method for each service separately, you can
+call the `populate` method on the concrete class.  This method uses reflection
+to determine which services the class implements, and then creates
+container entries accordingly.
+
+```php
+// This:
+$container->populate(Baz::class);
+
+// is equivalent to:
+$container->set(FooService::class, Baz::class);
+$container->set(BarService::class, Baz::class);
+```
+
 ### Loading configurations
 
 Instead of configuring the container programmatically, you can also load a

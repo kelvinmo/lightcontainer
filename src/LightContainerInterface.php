@@ -66,6 +66,32 @@ interface LightContainerInterface extends ContainerInterface {
     public function set(string $id, $value = null): ResolverInterface;
 
     /**
+     * Registers a resolver that resolves to a specified class, with respect to
+     * all the interfaces implemented by the class.  This is useful when
+     * registering a class that implements one or more services specified using
+     * interfaces.
+     * 
+     * This method uses PHP reflection to determine all the interfaces
+     * implemented by the specified `$class_name` (including all parents of
+     * these interfaces), and then registers a class resolver against all these
+     * interface names that resolves to this class.  This methods overwrites
+     * all the resolvers previously registered against those interfaces.
+     * 
+     * Interfaces to be excluded from registration can be specified using the
+     * `$exclude` parameter.
+     * 
+     * Note that a single instance of the class resolver is created by this
+     * method.  All the registered interfaces point to the shared resolver.
+     * This resolver is returned by the method for further configuration.
+     * 
+     * @param string $class_name the name of the class to find interfaces
+     * @param array<string> $exclude an array of interface names to exclude from
+     * registration
+     * @return ResolverInterface the resolver
+     */
+    public function populate(string $class_name, array $exclude = []): ResolverInterface;
+
+    /**
      * Returns the resolver associated with a particular entry identifier.
      * 
      * If a resolver cannot be found, it returns null

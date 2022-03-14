@@ -115,6 +115,23 @@ class Container implements LightContainerInterface {
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function populate(string $class_name, array $exclude = []): ResolverInterface {
+        $resolver = new ClassResolver($class_name);
+
+        $refl = new \ReflectionClass($class_name);
+        $interfaces = $refl->getInterfaceNames();
+        foreach ($interfaces as $interface) {
+            if (!in_array($interface, $exclude)) {
+                $this->resolvers[$interface] = $resolver;
+            }
+        }
+
+        return $resolver;
+    }
+
+    /**
      * Remove a resolver from a container
      * 
      * @param string $id the identifier
