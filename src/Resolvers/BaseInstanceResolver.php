@@ -71,7 +71,8 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
         'propagate' => true,
         'alias' => [],
         'args' => [],
-        'call' => []
+        'call' => [],
+        'modify' => null
     ];
 
     /**
@@ -218,6 +219,26 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
             'args' => $this->buildResolversFromArgs($args),
         ];
 
+        return $this;
+    }
+
+    /**
+     * Modifies the resolved object by passing it to a callable.
+     * 
+     * The callable is specified in the first parameter.  The callable receives
+     * the object that has been resolved and an instance of the container
+     * instance, and should return the modified object.  That is, the signature
+     * of the callable is as follows:
+     * 
+     * ```
+     * function(object $obj, LightContainerInterface $container): object
+     * ```
+     * 
+     * @param callable|null $modifier callable to modify the resolved object
+     * @return BaseInstanceResolver
+     */
+    public function modify(?callable $modifier) {
+        $this->options['modify'] = $modifier;
         return $this;
     }
 
