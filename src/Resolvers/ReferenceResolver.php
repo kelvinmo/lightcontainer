@@ -136,7 +136,10 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
      * @return bool true if custom instantiation options are set
      */
     public function hasCustomOptions(): bool {
-        return (!empty($this->options['alias']) || !empty($this->options['args']) || !empty($this->options['call']));
+        return (!empty($this->options['alias'])
+            || !empty($this->options['args'])
+            || !empty($this->options['call'])
+            || !empty($this->options['modify']));
     }
 
     /**
