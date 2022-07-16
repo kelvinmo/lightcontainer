@@ -165,7 +165,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      * {@inheritdoc}
      */
     public function checkType($expected_type, $allow_null = true): bool {
-        return is_a($this->class_name, $expected_type);
+        return is_a($this->class_name, $expected_type, true);
     }
 
     /**
