@@ -2,3 +2,6 @@ parameters:
   level: 6
   paths:
     - src
+  ignoreErrors:
+    - message: '#If condition is always true#'
+      path: Resolvers/ValueResolver.php   
