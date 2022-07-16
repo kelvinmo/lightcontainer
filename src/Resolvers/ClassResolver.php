@@ -447,7 +447,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         }
 
         if ($options['modify'] != null) {
-            $object = call_user_func($options['modify'], $object, $container);
+            $object = $options['modify']->modify($object, $container);
         }
         
         // 7. Save the object if it is shared
