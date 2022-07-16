@@ -67,15 +67,21 @@ interface LightContainerInterface extends ContainerInterface {
 
     /**
      * Registers a resolver that resolves to a specified class, with respect to
-     * all the interfaces implemented by the class.  This is useful when
-     * registering a class that implements one or more services specified using
-     * interfaces.
+     * all the subinterfaces of {@link ServiceInterface} implemented by the class.
+     * This is useful when registering a class that implements one or more
+     * services specified using interfaces.
      * 
-     * This method uses PHP reflection to determine all the interfaces
-     * implemented by the specified `$class_name` (including all parents of
-     * these interfaces), and then registers a class resolver against all these
-     * interface names that resolves to this class.  This methods overwrites
-     * all the resolvers previously registered against those interfaces.
+     * This method:
+     * 
+     * 1. uses PHP reflection to determine all the interfaces
+     *    implemented by the specified `$class_name` (including all parents
+     *    of these interfaces);
+     * 2. determines which of these interfaces extend {@link ServiceInterface};
+     * 3. registers a class resolver against all those interface names, with
+     *    the class resolver resolving to this class.
+     * 
+     * This method overwrites all the resolvers previously registered against
+     * those interfaces.
      * 
      * Interfaces to be excluded from registration can be specified using the
      * `$exclude` parameter.
