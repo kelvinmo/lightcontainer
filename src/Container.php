@@ -121,11 +121,13 @@ class Container implements LightContainerInterface {
         $resolver = new ClassResolver($class_name);
 
         $refl = new \ReflectionClass($class_name);
-        $interfaces = $refl->getInterfaceNames();
-        foreach ($interfaces as $interface) {
-            if (!in_array($interface, $exclude)) {
-                $this->resolvers[$interface] = $resolver;
-            }
+        $interfaces = $refl->getInterfaces();
+        foreach ($interfaces as $interface_name => $interface) {
+            if ($interface_name == ServiceInterface::class) continue;
+            if (!$interface->isSubclassOf(ServiceInterface::class)) continue;
+            if (in_array($interface_name, $exclude)) continue;
+
+            $this->resolvers[$interface_name] = $resolver;
         }
 
         return $resolver;

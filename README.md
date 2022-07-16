@@ -498,9 +498,11 @@ In certain situations, concrete classes are used to implement services,
 which are defined using interfaces.  Containers are then used to link the
 services to their implementations.
 
+Services are identified by extending `LightContainer\ServiceInterface`.
+
 ```php
-interface FooService {}
-interface BarService {}
+interface FooService extends ServiceInterface {}
+interface BarService extends ServiceInterface {}
 
 class Baz implements FooService, BarService {}
 ```
