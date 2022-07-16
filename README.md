@@ -19,6 +19,7 @@ that supports autowiring.
     * [Aliases](#aliases)
     * [Constructor arguments](#constructor-arguments)
     * [Setter injection](#setter-injection)
+    * [Modifying resolved instances](#modifying-resolved-instances)
     * [Shared instances](#shared-instances)
     * [Options for autowired resolvers](#options-for-autowired-resolvers)
   * [Global aliases](#global-aliases)
