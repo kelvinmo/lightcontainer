@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.2.0
 
-## Added
+### Added
 
 - Add `populate` method to register services
 - Add `modify` option to allow resolved objects to be modified before being
