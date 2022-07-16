@@ -234,7 +234,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
      * @return BaseInstanceResolver
      * @see InstanceModifierInterface
      */
-    public function modify(InstanceModifierInterface $modifier) {
+    public function modify(?InstanceModifierInterface $modifier) {
         $this->options['modify'] = $modifier;
         return $this;
     }
