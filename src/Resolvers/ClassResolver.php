@@ -445,11 +445,15 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
                 }, $this->cache['resolvers'][$method]));
             }
         }
+
+        if ($options['modify'] != null) {
+            $object = $options['modify']->modify($object, $container);
+        }
         
-        // 6. Save the object if it is shared
+        // 7. Save the object if it is shared
         if ($options['shared']) $this->saveSharedObject($object);
 
-        // 7. Return the object
+        // 8. Return the object
         return $object;
     }
 

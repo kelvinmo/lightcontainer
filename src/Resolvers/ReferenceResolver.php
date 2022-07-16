@@ -136,7 +136,10 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
      * @return bool true if custom instantiation options are set
      */
     public function hasCustomOptions(): bool {
-        return (!empty($this->options['alias']) || !empty($this->options['args']) || !empty($this->options['call']));
+        return (!empty($this->options['alias'])
+            || !empty($this->options['args'])
+            || !empty($this->options['call'])
+            || !empty($this->options['modify']));
     }
 
     /**
@@ -191,9 +194,9 @@ class ReferenceResolver extends BaseInstanceResolver implements LoadableInterfac
             $resolver = clone $resolver;
             $resolver->setAutowired(false);
 
-            // Set options - only alias, args and call should be set
+            // Set options - only alias, args, call and modify should be set
             $options = array_filter($this->options, function ($v, $k) { 
-                return (in_array($k, ['alias', 'args', 'call']) && !empty($v)); 
+                return (in_array($k, ['alias', 'args', 'call', 'modify']) && !empty($v)); 
             }, ARRAY_FILTER_USE_BOTH);
 
             $resolver->setOptions($options);

@@ -36,6 +36,7 @@
 namespace LightContainer\Resolvers;
 
 use LightContainer\LightContainerInterface;
+use LightContainer\InstanceModifierInterface;
 use LightContainer\NotFoundException;
 use LightContainer\Loader\LoadableInterface;
 use LightContainer\Loader\LoaderInterface;
@@ -71,7 +72,8 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
         'propagate' => true,
         'alias' => [],
         'args' => [],
-        'call' => []
+        'call' => [],
+        'modify' => null
     ];
 
     /**
@@ -218,6 +220,22 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
             'args' => $this->buildResolversFromArgs($args),
         ];
 
+        return $this;
+    }
+
+    /**
+     * Modifies the resolved object by passing it to a modifier.
+     * 
+     * The modifier is an object that implements {@link InstanceModifierInterface}.
+     * The {@link InstanceModifierInterface::modify()} method is called to
+     * return the modified object.
+     * 
+     * @param InstanceModifierInterface|null $modifier the modifier
+     * @return BaseInstanceResolver
+     * @see InstanceModifierInterface
+     */
+    public function modify(?InstanceModifierInterface $modifier) {
+        $this->options['modify'] = $modifier;
         return $this;
     }
 

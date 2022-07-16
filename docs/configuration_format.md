@@ -68,6 +68,7 @@ The configuration array only supports a subset to LightContainer's features.
 **Not supported**
 
 * ❎ Specifying references to callables or objects
+* ❎ Specifying modifiers using the `modify` instantiation option
 * ❎ Custom instantiation
 * ❎ Configuring services using `populate`
 

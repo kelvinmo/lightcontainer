@@ -288,6 +288,29 @@ $container->set(K::class)
 **NOTE.** Aliases apply to the constructor and *all* setter methods.  You
 cannot define aliases that only applies to a particular setter method.
 
+#### Modifying resolved instances
+
+In addition to setter injection, LightContainer supports other forms of
+modifying the resolved object before passing it back to the caller.
+
+To do this, create an instance of a class that implements
+`LightContainer\InstanceModifierInterface`, then pass it to the
+container using the `modify` method.
+
+```php
+class Modifier implements InstanceModifierInterface {
+    public function modify(object $obj, LightContainerInterface $container): object {}
+}
+
+class ModifyMe {}
+
+$modifier = new Modifier();
+$container->set(ModifyMe::class)->modify($modifier);
+
+// The container will call $modifier->modify() before returning the instance
+$modify_me = $container->get(ModifyMe::class);
+```
+
 #### Shared instances
 
 There may be times where you want the same instance of a class to
@@ -654,6 +677,7 @@ options (apart from `propagate`) are also available for
 | [`alias`](#aliases)                             | none                                                         | Aliases for type hinted arguments for the constructor and setter methods |
 | [`args`](#constructor-arguments)                | none                                                         | Set other arguments for the constructor                      |
 | [`call`](#setter-injection)                     | none                                                         | Call setter methods                                          |
+| [`modify`](#modifying-resolved-instances)       | none                                                         | Modify resolved instances                                    |
 | [`propagate`](#options-for-autowired-resolvers) | true                                                         | Whether instantiation options will propagate to autowired resolvers for subclasses |
 | [`shared`](#shared-instances)                   | false (except for [named instances](#multiple-shared-instances)) | Whether the instance resolved is shared across the container |
 

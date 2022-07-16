@@ -5,6 +5,8 @@
 ## Added
 
 - Add `populate` method to register services
+- Add `modify` option to allow resolved objects to be modified before being
+  returned by the container
 
 ## 0.1.4
 
