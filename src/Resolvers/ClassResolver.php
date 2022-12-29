@@ -74,8 +74,8 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
 
     /** @var array<string, mixed> */
     protected $cache = [
-        'tree' => [],
-        'interfaces' => [],
+        'tree' => [],            // tree of parent classes
+        'interfaces' => [],      // interfaces implemented by this class
         'constructor' => null,   // ReflectionMethod for the constructor
         'params' => [],
         'resolvers' => [],
@@ -113,7 +113,7 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
             $refl = $parent;
         }
 
-        // Add wildcard
+        // Add wildcard to the top of the tree
         $this->cache['tree'][] = '*';
     }
 
