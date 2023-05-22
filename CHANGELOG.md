@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- The self resolver is attached to `LightContainerInterface` instead of
+  `Container`
+
 ## 0.2.0
 
 ### Added
