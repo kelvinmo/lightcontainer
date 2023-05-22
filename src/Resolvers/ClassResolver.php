@@ -35,8 +35,11 @@
 
 namespace LightContainer\Resolvers;
 
+use \ReflectionAttribute;
 use LightContainer\LightContainerInterface;
 use LightContainer\ContainerException;
+use LightContainer\Attributes\LightContainerAttributeInterface;
+use LightContainer\Attributes\InstantiationOptions;
 use LightContainer\Loader\LoadableInterface;
 use LightContainer\Loader\LoaderInterface;
 
@@ -111,6 +114,14 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         while ($parent = $refl->getParentClass()) {
             $this->cache['tree'][] = $parent->getName();
             $refl = $parent;
+        }
+
+        if (method_exists($refl, 'getAttributes')) {
+            $attributes = $refl->getAttributes(LightContainerAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF);
+            foreach ($attributes as $attribute) {
+                if ($attribute->getName() != InstantiationOptions::class) continue;
+                $this->cache['attributes'] = $attribute->getArguments();
+            }
         }
 
         // Add wildcard to the top of the tree
