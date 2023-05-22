@@ -76,7 +76,7 @@ class Container implements LightContainerInterface {
 
     public function __construct() {
         $this->self_resolver = ValueResolver::create($this);
-        $this->set(self::class, $this->self_resolver);
+        $this->set(LightContainerInterface::class, $this->self_resolver);
         $this->set(LoaderInterface::class, Loader::class);
     }
     
