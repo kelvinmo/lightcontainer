@@ -35,6 +35,7 @@
 
 namespace LightContainer;
 
+use LightContainer\Attributes\Service;
 use LightContainer\Resolvers\AutowireInterface;
 use LightContainer\Resolvers\ResolverInterface;
 use LightContainer\Resolvers\BaseInstanceResolver;
@@ -123,8 +124,15 @@ class Container implements LightContainerInterface {
         $refl = new \ReflectionClass($class_name);
         $interfaces = $refl->getInterfaces();
         foreach ($interfaces as $interface_name => $interface) {
+            // PHP 7 compatibility
+            if (method_exists($interface, 'getAttributes')) {
+                $service_attribute = count($interface->getAttributes(Service::class));
+            } else {
+                $service_attribute = 0;
+            }
+
             if ($interface_name == ServiceInterface::class) continue;
-            if (!$interface->isSubclassOf(ServiceInterface::class)) continue;
+            if (!$interface->isSubclassOf(ServiceInterface::class) && ($service_attribute == 0)) continue;
             if (in_array($interface_name, $exclude)) continue;
 
             $this->resolvers[$interface_name] = $resolver;
