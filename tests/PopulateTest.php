@@ -53,6 +53,11 @@ class PopulateTest extends TestCase {
     }
 
     public function testPopulateAttribute() {
+        if (!method_exists(\ReflectionClass::class, 'getAttributes')) {
+            $this->markTestSkipped('Attributes not supported in this version of PHP');
+            return;
+        }
+        
         $container = new Container();
         $container->populate(PopulateTestDE::class);
         
