@@ -2,7 +2,7 @@
 /*
  * LightContainer
  *
- * Copyright (C) Kelvin Mo 2021
+ * Copyright (C) Kelvin Mo 2021-2023
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -76,7 +76,7 @@ class Container implements LightContainerInterface {
 
     public function __construct() {
         $this->self_resolver = ValueResolver::create($this);
-        $this->set(self::class, $this->self_resolver);
+        $this->set(LightContainerInterface::class, $this->self_resolver);
         $this->set(LoaderInterface::class, Loader::class);
     }
     

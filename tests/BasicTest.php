@@ -3,6 +3,7 @@
 namespace LightContainer\Tests;
 
 use LightContainer\Container;
+use LightContainer\LightContainerInterface;
 use PHPUnit\Framework\TestCase;
 
 /* -------------------------------------------------------------------------
@@ -180,6 +181,12 @@ class BasicTest extends TestCase {
         $this->assertEquals(2, $paramHash['two']);
         $this->assertEquals(3, $paramHash['three']);
         $this->assertSame($obj, $container->get('@obj'));
+    }
+
+    // self
+    public function testSelfResolver() {
+        $container = new Container();
+        $this->assertSame($container, $container->get(LightContainerInterface::class));
     }
 }
 
