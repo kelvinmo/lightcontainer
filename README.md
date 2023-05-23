@@ -558,7 +558,7 @@ YAML file).
 try {
     $config = [
         'FooInterface' => 'FooInterfaceImpl',
-        '@host' => [ '#value' => 'example.com' ]
+        '@host' => [ '_value' => 'example.com' ]
     ];
     $container->load($config);
 } catch (LightContainer\Loader\LoaderException $e) {
