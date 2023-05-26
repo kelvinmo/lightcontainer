@@ -65,6 +65,16 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface {
     /**
      * An array of instantiation options
      * 
+     * - `shared` (`bool`): true if this is a shared instance
+     * - `propagate` (`bool`): true if instantiation options are propagated to autowired classes
+     * - `alias` (`array<string, string>`): an array of aliases
+     * - `args` (`array<mixed>`): an array of arguments to be passed to the constructor
+     * - `call` (`array<array<string, mixed>>`): an array of arrays, each of which has the following
+     *   keys:
+     *         - `method` (`string`): the method to call
+     *         - `args` (`array<ResolverInterface>`): an array of resolvers
+     * - `modify` (`InstanceModifierInterface?`): the modifier or null
+     * 
      * @var array<string, mixed>
      */
     protected $options = [
