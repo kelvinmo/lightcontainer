@@ -140,7 +140,7 @@ class BaseInstanceResolver implements ResolverInterface, LoadableInterface, Inst
             if (!(is_string($target) || ($target == null))) {
                 throw new \InvalidArgumentException('alias target must be a string or null');
             }
-            $this->options['alias'][$id] = ltrim($target, '\\');
+            $this->options['alias'][$id] = ($target == null) ? '' : ltrim($target, '\\');
         }
         return $this;
     }
