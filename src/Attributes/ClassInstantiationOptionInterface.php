@@ -2,7 +2,7 @@
 /*
  * LightContainer
  *
- * Copyright (C) Kelvin Mo 2021-2023
+ * Copyright (C) Kelvin Mo 2022
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,19 +33,23 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer;
+namespace LightContainer\Attributes;
+
+use \Attribute;
+use LightContainer\Resolvers\InstantiationOptionsInterface;
 
 /**
- * Marker for a *service* that will be registered when a implementing
- * class is registered by calling the {@link LightContainerInterface::populate()}
- * method.
- * 
- * This interface is meant to be extended by other interfaces only.
- * It should not be implemented by a concrete class.
- * 
- * @see LightContainerInterface::populate()
- * @see \LightContainer\Attributes\Service
+ * Interface for attributes for instantiation options that can be set at
+ * a class level.
  */
-interface ServiceInterface {
+interface ClassInstantiationOptionInterface extends LightContainerAttributeInterface {
+    /**
+     * Apply the instantiation option to the resolver.
+     * 
+     * @param InstantiationOptionsInterface $resolver the resolver for
+     * which the instantiation option is to be set
+     * @return InstantiationOptionsInterface
+     */
+    public function apply(InstantiationOptionsInterface $resolver);
 }
 ?>

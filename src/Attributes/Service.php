@@ -2,7 +2,7 @@
 /*
  * LightContainer
  *
- * Copyright (C) Kelvin Mo 2021-2023
+ * Copyright (C) Kelvin Mo 2023
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,19 +33,19 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer;
+namespace LightContainer\Attributes;
+
+use \Attribute;
 
 /**
- * Marker for a *service* that will be registered when a implementing
+ * Attribute for a *service* that will be registered when a implementing
  * class is registered by calling the {@link LightContainerInterface::populate()}
  * method.
  * 
- * This interface is meant to be extended by other interfaces only.
- * It should not be implemented by a concrete class.
- * 
  * @see LightContainerInterface::populate()
- * @see \LightContainer\Attributes\Service
+ * @see \LightContainer\ServiceInterface
  */
-interface ServiceInterface {
+#[Attribute]
+class Service implements LightContainerAttributeInterface {
 }
 ?>

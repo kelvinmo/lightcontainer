@@ -113,6 +113,8 @@ $container->set(D::class)
     ->shared();
 ```
 
+Certain instantiation options can be set using attributes.
+
 Instantiation options are cleared every time you call the `set` method
 on the container object.  To set additional options on the same
 resolver, use the `getResolver` method to retrieve the existing resolver.
@@ -333,6 +335,18 @@ However, this only works if the shared instance has *not* been created
 (i.e. if `get` hasn't been called).  Otherwise this will throw an
 exception.
 
+You can also set this option using the `LightContainer\Attributes\Shared`
+attribute:
+
+```php
+#[Shared]
+class A {}
+$container->set(A::class);
+
+// This is equivalent to:
+// $container->set(A::class)->shared();
+```
+
 #### Options for autowired resolvers
 
 *Autowired resolvers* are created automatically by the container as part of
@@ -371,6 +385,14 @@ $container->set(L::class)->shared()->propagate(false);
 // subclasses
 $n1 = $container->get(N::class);
 $n2 = $container->get(N::class);
+```
+
+You can also set this option using the `LightContainer\Attributes\Propagate`
+attribute:
+
+```php
+#[Propagate(false)]
+class L {}
 ```
 
 To set instantiation options for *all* autowired resolvers, you can use the
@@ -523,9 +545,19 @@ In certain situations, concrete classes are used to implement services,
 which are defined using interfaces.  Containers are then used to link the
 services to their implementations.
 
-Services are identified by extending `LightContainer\ServiceInterface`.
+Services are identified by either:
+
+- using the `LightContainer\Attributes\Service` attribute; or
+- extending `LightContainer\ServiceInterface`.
 
 ```php
+// PHP 8
+#[Service]
+interface FooService {}
+#[Service]
+interface BarService {}
+
+// PHP 7
 interface FooService extends ServiceInterface {}
 interface BarService extends ServiceInterface {}
 

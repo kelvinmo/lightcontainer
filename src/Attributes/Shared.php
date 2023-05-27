@@ -2,7 +2,7 @@
 /*
  * LightContainer
  *
- * Copyright (C) Kelvin Mo 2021-2023
+ * Copyright (C) Kelvin Mo 2022
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -33,19 +33,33 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace LightContainer;
+namespace LightContainer\Attributes;
+
+use \Attribute;
+use LightContainer\Resolvers\InstantiationOptionsInterface;
 
 /**
- * Marker for a *service* that will be registered when a implementing
- * class is registered by calling the {@link LightContainerInterface::populate()}
- * method.
+ * Attribute to mark that the class is a shared instance.
  * 
- * This interface is meant to be extended by other interfaces only.
- * It should not be implemented by a concrete class.
- * 
- * @see LightContainerInterface::populate()
- * @see \LightContainer\Attributes\Service
+ * @see \LightContainer\ClassInstantiationOptionInterface::shared()
  */
-interface ServiceInterface {
+#[Attribute]
+class Shared implements ClassInstantiationOptionInterface {
+    /** @var bool */
+    public $value;
+
+    /**
+     * @param bool $shared
+     */
+    public function __construct(bool $shared = true) {
+        $this->value = $shared;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function apply(InstantiationOptionsInterface $resolver) {
+        return $resolver->shared($this->value);
+    }
 }
 ?>
