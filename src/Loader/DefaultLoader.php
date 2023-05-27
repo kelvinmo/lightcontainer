@@ -52,7 +52,7 @@ use LightContainer\Resolvers\ValueResolver;
  * how the PHP array is populated, e.g. loading from a JSON or YAML
  * configuration file.
  */
-class Loader implements LoaderInterface {
+class DefaultLoader implements LoaderInterface {
     // Canonical format
     const TYPE = '_type';
     const ARGS = '_args';
