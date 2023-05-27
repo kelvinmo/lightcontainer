@@ -38,8 +38,7 @@ namespace LightContainer\Resolvers;
 use \ReflectionAttribute;
 use LightContainer\LightContainerInterface;
 use LightContainer\ContainerException;
-use LightContainer\Attributes\LightContainerAttributeInterface;
-use LightContainer\Attributes\InstantiationOptions;
+use LightContainer\Attributes\ClassInstantiationOptionInterface;
 use LightContainer\Loader\LoadableInterface;
 use LightContainer\Loader\LoaderInterface;
 
@@ -117,10 +116,10 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
         }
 
         if (method_exists($refl, 'getAttributes')) {
-            $attributes = $refl->getAttributes(LightContainerAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF);
+            $attributes = $refl->getAttributes(ClassInstantiationOptionInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($attributes as $attribute) {
-                if ($attribute->getName() != InstantiationOptions::class) continue;
-                $this->cache['attributes'] = $attribute->getArguments();
+                $k = $attribute->newInstance();
+                $k->apply($this);
             }
         }
 

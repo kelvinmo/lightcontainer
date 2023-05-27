@@ -36,20 +36,30 @@
 namespace LightContainer\Attributes;
 
 use \Attribute;
+use LightContainer\Resolvers\InstantiationOptionsInterface;
 
 /**
- * Instantiation options
+ * Attribute to mark that the class is a shared instance.
+ * 
+ * @see \LightContainer\BaseInstanceResolver::shared()
  */
 #[Attribute]
-class InstantiationOptions implements LightContainerAttributeInterface {
-    /** @var array<string, mixed> */
-    public $options;
+class Shared implements ClassInstantiationOptionInterface {
+    /** @var bool */
+    public $value;
 
     /**
-     * @param array<string, mixed> $options
+     * @param bool $shared
      */
-    public function __construct(array $options) {
-        $this->options = $options;
+    public function __construct(bool $shared = true) {
+        $this->value = $shared;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function apply(InstantiationOptionsInterface $resolver) {
+        return $resolver->shared($this->value);
     }
 }
 ?>

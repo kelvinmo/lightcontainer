@@ -4,12 +4,19 @@ namespace LightContainer\Tests;
 
 use LightContainer\Container;
 use LightContainer\LightContainerInterface;
+use LightContainer\Attributes\Shared;
 use PHPUnit\Framework\TestCase;
 
 /* -------------------------------------------------------------------------
  * Mock classes
  * ------------------------------------------------------------------------- */
 class BasicTestClass {}
+
+#[Shared]
+class BasicTestSharedClass {}
+
+#[Shared(false)]
+class BasicTestNotSharedClass {}
 
 interface BasicTestInterface {}
 
@@ -83,6 +90,25 @@ class BasicTest extends TestCase {
         $a = $container->get(BasicTestClass::class);
         $b = $container->get(BasicTestClass::class);
         $this->assertSame($a, $b);
+    }
+
+    public function testSharedAttribute() {
+        if (!method_exists(\ReflectionClass::class, 'getAttributes')) {
+            $this->markTestSkipped('Attributes not supported in this version of PHP');
+            return;
+        }
+
+        $container = new Container();
+        $container->set(BasicTestSharedClass::class);
+        $container->set(BasicTestNotSharedClass::class);
+        
+        $a = $container->get(BasicTestSharedClass::class);
+        $b = $container->get(BasicTestSharedClass::class);
+        $this->assertSame($a, $b);
+
+        $c = $container->get(BasicTestNotSharedClass::class);
+        $d = $container->get(BasicTestNotSharedClass::class);
+        $this->assertNotSame($c, $d);
     }
 
     public function testSharedDependency() {

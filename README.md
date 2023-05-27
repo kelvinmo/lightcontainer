@@ -113,6 +113,8 @@ $container->set(D::class)
     ->shared();
 ```
 
+Certain instantiation options can be set using attributes.
+
 Instantiation options are cleared every time you call the `set` method
 on the container object.  To set additional options on the same
 resolver, use the `getResolver` method to retrieve the existing resolver.
@@ -332,6 +334,18 @@ You can also switch off this behaviour by calling `shared(false)`.
 However, this only works if the shared instance has *not* been created
 (i.e. if `get` hasn't been called).  Otherwise this will throw an
 exception.
+
+You can also set this option using the `LightContainer\Attributes\Shared`
+attribute:
+
+```php
+#[Shared]
+class A {}
+$container->set(A::class);
+
+// This is equivalent to:
+// $container->set(A::class)->shared();
+```
 
 #### Options for autowired resolvers
 
