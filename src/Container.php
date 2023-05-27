@@ -126,7 +126,7 @@ class Container implements LightContainerInterface {
         foreach ($interfaces as $interface_name => $interface) {
             // PHP 7 compatibility
             if (method_exists($interface, 'getAttributes')) {
-                $service_attribute = count($interface->getAttributes(Service::class));
+                $service_attribute = count($interface->getAttributes(Service::class, \ReflectionAttribute::IS_INSTANCEOF));
             } else {
                 $service_attribute = 0;
             }
