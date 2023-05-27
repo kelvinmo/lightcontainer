@@ -74,14 +74,31 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
      */
     protected $autowired = false;
 
-    /** @var array<string, mixed> */
+    /**
+     * Cache
+     * 
+     * - `constructor` (`ReflectionMethod`): reflection information on the class'
+     *   constructor
+     * - `interfaces` (`array<string>`): an array of names of interfaces implemented
+     *   by this class
+     * - `is_internal` (`bool`): true if the class is internal (i.e. defined by C code)
+     * - `params` (`array<string, array<array<string, mixed>>>`): a map between the
+     *   method name (or the constructor) and an array of parameter property arrays
+     * - `resolvers` (`array<string, array<ResolverInterface>>`): a map between the
+     *   method name (or the constructor) and an array of resolvers for the parameters
+     *   for that method
+     * - `tree` (`array<string>`): a tree of parent class, starting from the class'
+     *   immediate parent
+     * 
+     * @var array<string, mixed>
+     */
     protected $cache = [
-        'tree' => [],            // tree of parent classes
-        'interfaces' => [],      // interfaces implemented by this class
+        'tree' => [],
+        'interfaces' => [],
         'constructor' => null,   // ReflectionMethod for the constructor
         'params' => [],
         'resolvers' => [],
-        'is_internal' => false   // Whether the class is defined by C code or PHP code
+        'is_internal' => false   // 
     ];
 
     /**
@@ -267,7 +284,18 @@ class ClassResolver extends BaseInstanceResolver implements AutowireInterface, T
     }
 
     /**
-     * Builds an array of parameter properties for a specified method
+     * Builds an array of parameter properties for a specified method.
+     * 
+     * The parameter properties include the following:
+     * 
+     * - `optional` (`bool`): is the parameter optional
+     * - `allow_null` (`bool`): whether nulls is allowed
+     * - `builtin` (`bool`): whether the type is a builtin type
+     * - `default` (`mixed`): the default value (if it is defined)
+     * - `type` (`string`): the name of the type for the parameter specified in
+     *   the type hint, or one of the following special values:
+     *     - `*` - no type hint is defined
+     *     - `...` - variadic parameter
      * 
      * @param \ReflectionMethod $method the reflection object on the specified
      * method
