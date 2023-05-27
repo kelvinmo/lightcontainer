@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Add configuration via attributes (#11)
+
 ## 0.2.1
 
 ### Fixed
