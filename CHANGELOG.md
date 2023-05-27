@@ -6,6 +6,10 @@
 
 - Add configuration via attributes (#11)
 
+### Changed
+
+- `Loader` renamed to `DefaultLoader`
+
 ## 0.2.1
 
 ### Fixed

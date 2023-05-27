@@ -43,7 +43,7 @@ use LightContainer\Resolvers\ClassResolver;
 use LightContainer\Resolvers\FactoryResolver;
 use LightContainer\Resolvers\ReferenceResolver;
 use LightContainer\Resolvers\ValueResolver;
-use LightContainer\Loader\Loader;
+use LightContainer\Loader\DefaultLoader;
 use LightContainer\Loader\LoaderInterface;
 use LightContainer\Loader\LoaderException;
 
@@ -78,7 +78,7 @@ class Container implements LightContainerInterface {
     public function __construct() {
         $this->self_resolver = ValueResolver::create($this);
         $this->set(LightContainerInterface::class, $this->self_resolver);
-        $this->set(LoaderInterface::class, Loader::class);
+        $this->set(LoaderInterface::class, DefaultLoader::class);
     }
     
     /**
