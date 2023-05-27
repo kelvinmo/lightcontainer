@@ -387,6 +387,14 @@ $n1 = $container->get(N::class);
 $n2 = $container->get(N::class);
 ```
 
+You can also set this option using the `LightContainer\Attributes\Propagate`
+attribute:
+
+```php
+#[Propagate(false)]
+class L {}
+```
+
 To set instantiation options for *all* autowired resolvers, you can use the
 special wildcard resolver `*`.
 

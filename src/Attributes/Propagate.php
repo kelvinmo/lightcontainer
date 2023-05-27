@@ -39,27 +39,28 @@ use \Attribute;
 use LightContainer\Resolvers\InstantiationOptionsInterface;
 
 /**
- * Attribute to mark that the class is a shared instance.
+ * Attribute to mark that the instantiation options for this class
+ * will propagate to other autowired resolvers.
  * 
- * @see \LightContainer\ClassInstantiationOptionInterface::shared()
+ * @see \LightContainer\ClassInstantiationOptionInterface::propagate()
  */
 #[Attribute]
-class Shared implements ClassInstantiationOptionInterface {
+class Propagate implements ClassInstantiationOptionInterface {
     /** @var bool */
     public $value;
 
     /**
-     * @param bool $shared
+     * @param bool $propagate
      */
-    public function __construct(bool $shared = true) {
-        $this->value = $shared;
+    public function __construct(bool $propagate = true) {
+        $this->value = $propagate;
     }
 
     /**
      * {@inheritdoc}
      */
     public function apply(InstantiationOptionsInterface $resolver) {
-        return $resolver->shared($this->value);
+        return $resolver->propagate($this->value);
     }
 }
 ?>

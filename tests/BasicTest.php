@@ -5,6 +5,7 @@ namespace LightContainer\Tests;
 use LightContainer\Container;
 use LightContainer\LightContainerInterface;
 use LightContainer\Attributes\Shared;
+use LightContainer\Attributes\Propagate;
 use PHPUnit\Framework\TestCase;
 
 /* -------------------------------------------------------------------------
@@ -17,6 +18,11 @@ class BasicTestSharedClass {}
 
 #[Shared(false)]
 class BasicTestNotSharedClass {}
+
+#[Propagate(false)]
+class BasicTestPropagateClass {}
+
+class BasicTestPropagateSubclass extends BasicTestPropagateClass {}
 
 interface BasicTestInterface {}
 
@@ -150,6 +156,21 @@ class BasicTest extends TestCase {
 
         $a = $container->get(BasicTestClass::class);
         $b = $container->get(BasicTestClass::class);
+        $this->assertNotSame($a, $b);
+    }
+
+    public function testPropagateAttribute() {
+        if (!method_exists(\ReflectionClass::class, 'getAttributes')) {
+            $this->markTestSkipped('Attributes not supported in this version of PHP');
+            return;
+        }
+
+        $container = new Container();
+        $container->set(BasicTestPropagateClass::class)->shared();
+
+        // 'shared' option should not be propagated to subclasses
+        $a = $container->get(BasicTestPropagateSubclass::class);
+        $b = $container->get(BasicTestPropagateSubclass::class);
         $this->assertNotSame($a, $b);
     }
 
