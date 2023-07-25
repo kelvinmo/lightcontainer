@@ -201,7 +201,7 @@ class Container implements LightContainerInterface {
     /**
      * {@inheritdoc}
      */
-    public function load(array $config) {
+    public function load(iterable $config) {
         $loader = $this->get(LoaderInterface::class);
         $resolvers = [];
 

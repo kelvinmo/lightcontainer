@@ -113,11 +113,11 @@ interface LightContainerInterface extends ContainerInterface {
     /**
      * Loads a container configuration from an array
      * 
-     * @param array<string, mixed> $config the array to load
+     * @param iterable<string, mixed> $config the array to load
      * @throws \LightContainer\Loader\LoaderException if an error occurs
      * in the load
      * @return void
      */
-    public function load(array $config);
+    public function load(iterable $config);
 }
 ?>

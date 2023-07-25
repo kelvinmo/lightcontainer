@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Method signature of `LightContainerInterface::load()` from
+  `array` to `iterable`
+
 ## 0.3.0
 
 ### Added

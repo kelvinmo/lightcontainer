@@ -42,64 +42,64 @@ class LoaderTestSetterArgs {
  * ------------------------------------------------------------------------- */
 
 class LoaderTest extends TestCase {
+    protected $config = [
+        // Classes
+        'LightContainer\\Tests\\LoaderTestBasicClass' => [],
+        'LightContainer\\Tests\\LoaderTestClassWithOptions' => [
+            'shared' => true
+        ],
+        'LightContainer\\Tests\\LoaderTestConstructorArgs' => [
+            'args' => [ 8080 ]
+        ],
+        'LightContainer\\Tests\\LoaderTestSetterArgs' => [
+            'call' => [ 
+                [ 'setInner' ]
+                ]
+        ],
+
+        // Global aliases
+        'LightContainer\\Tests\\LoaderTestInterface' => 'LightContainer\\Tests\\LoaderTestBasicClass',
+        'LightContainer\\Tests\\LoaderTestInterfaceWithOptions' => [
+            '_ref' => 'LightContainer\\Tests\\LoaderTestBasicClass',
+            'shared' => true
+        ],
+
+        // Named instances
+        '@named_instance_1' => [
+            '_ref' => 'LightContainer\\Tests\\LoaderTestConstructorArgs',
+            'args' => [ 1 ]
+        ],
+
+        '@named_instance_2' => [
+            '_ref' => 'LightContainer\\Tests\\LoaderTestConstructorArgs',
+            'args' => [ 2 ]
+        ],
+
+        // Values
+        '@null_value' => null,
+        '@bool_value' => false,
+
+        // Values - integer
+        '@int_value' => 1,
+
+        // Values - string
+        '@string_value' => ['_value' => 'hello'],
+
+        // Values - arrays
+        '@array_value' => [1, 2, 3, 4, 'five'],
+        //'@assoc_value' => ['_value' => ['one' => 1, 'two' => 2]],
+        '@assoc_value' => ['_type' => 'ValueResolver', 'one' => 1, 'two' => 2],
+
+        // Constants and globals
+        '@const_value' => ['_const' => 'LightContainer\Tests\LOADER_TEST_CONST'],
+        '@global_value' => ['_global' => 'loader_test_global'],
+    ];
+
     public function testLoad() {
         global $loader_test_global;
 
-        $config = [
-            // Classes
-            'LightContainer\\Tests\\LoaderTestBasicClass' => [],
-            'LightContainer\\Tests\\LoaderTestClassWithOptions' => [
-                'shared' => true
-            ],
-            'LightContainer\\Tests\\LoaderTestConstructorArgs' => [
-                'args' => [ 8080 ]
-            ],
-            'LightContainer\\Tests\\LoaderTestSetterArgs' => [
-                'call' => [ 
-                    [ 'setInner' ]
-                 ]
-            ],
-
-            // Global aliases
-            'LightContainer\\Tests\\LoaderTestInterface' => 'LightContainer\\Tests\\LoaderTestBasicClass',
-            'LightContainer\\Tests\\LoaderTestInterfaceWithOptions' => [
-                '_ref' => 'LightContainer\\Tests\\LoaderTestBasicClass',
-                'shared' => true
-            ],
-
-            // Named instances
-            '@named_instance_1' => [
-                '_ref' => 'LightContainer\\Tests\\LoaderTestConstructorArgs',
-                'args' => [ 1 ]
-            ],
-
-            '@named_instance_2' => [
-                '_ref' => 'LightContainer\\Tests\\LoaderTestConstructorArgs',
-                'args' => [ 2 ]
-            ],
-
-            // Values
-            '@null_value' => null,
-            '@bool_value' => false,
-
-            // Values - integer
-            '@int_value' => 1,
-
-            // Values - string
-            '@string_value' => ['_value' => 'hello'],
-
-            // Values - arrays
-            '@array_value' => [1, 2, 3, 4, 'five'],
-            //'@assoc_value' => ['_value' => ['one' => 1, 'two' => 2]],
-            '@assoc_value' => ['_type' => 'ValueResolver', 'one' => 1, 'two' => 2],
-
-            // Constants and globals
-            '@const_value' => ['_const' => 'LightContainer\Tests\LOADER_TEST_CONST'],
-            '@global_value' => ['_global' => 'loader_test_global'],
-        ];
-
         $container = new Container();
-        $container->load($config);
+        $container->load($this->config);
 
         $this->assertInstanceOf('LightContainer\\Resolvers\\ClassResolver', $container->getResolver('LightContainer\\Tests\\LoaderTestBasicClass'));
 
@@ -138,6 +138,16 @@ class LoaderTest extends TestCase {
 
         $this->assertEquals(LOADER_TEST_CONST, $container->get('@const_value'));
         $this->assertEquals($loader_test_global, $container->get('@global_value'));
+    }
+
+    public function testTraversableLoad() {
+        global $loader_test_global;
+
+        $traversable = new \ArrayObject($this->config);
+        $container = new Container();
+        $container->load($traversable);
+
+        $this->assertInstanceOf('LightContainer\\Resolvers\\ClassResolver', $container->getResolver('LightContainer\\Tests\\LoaderTestBasicClass'));
     }
 
     public function testWildcard() {
